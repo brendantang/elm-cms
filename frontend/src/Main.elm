@@ -3,7 +3,7 @@ module Main exposing (..)
 import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, h3, text)
+import Html exposing (Html, a, article, h2, h3, text)
 import Html.Attributes as Attr exposing (href, id)
 import Http
 import RequestStatus exposing (RequestStatus(..))
@@ -35,6 +35,7 @@ type alias Model =
     { key : Nav.Key
     , route : Route
     , articles : Articles
+    , editingArticle : Maybe Article
     , status : RequestStatus
     }
 
@@ -46,6 +47,7 @@ init _ url key =
             { key = key
             , route = IndexArticles
             , articles = Article.none
+            , editingArticle = Nothing
             , status = Idle
             }
     in
@@ -60,6 +62,7 @@ type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | GotArticles (Result Http.Error Articles)
+    | GotArticleBody (Result Http.Error Article)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -84,6 +87,14 @@ update msg model =
                 Err e ->
                     ( { model | status = Problem "Could not fetch articles from backend" }, Cmd.none )
 
+        GotArticleBody result ->
+            case result of
+                Ok art ->
+                    ( { model | editingArticle = Just art, status = Idle }, Cmd.none )
+
+                Err e ->
+                    ( { model | status = Problem "Could not fetch article from backend" }, Cmd.none )
+
 
 updateRoute : Url.Url -> Model -> ( Model, Cmd Msg )
 updateRoute url model =
@@ -99,6 +110,9 @@ updateRoute url model =
         IndexArticles ->
             ( { newModel | status = Fetching }, fetchArticles )
 
+        EditArticle artId ->
+            ( { newModel | status = Fetching }, fetchArticleBody artId )
+
         _ ->
             ( newModel, Cmd.none )
 
@@ -109,14 +123,17 @@ updateRoute url model =
 
 type Route
     = IndexArticles
+    | EditArticle Article.Id
     | NotFound
 
 
 routeParser : Parser (Route -> a) a
 routeParser =
-    oneOf
-        [ map IndexArticles (s "admin")
-        ]
+    s "admin"
+        </> oneOf
+                [ map IndexArticles top
+                , map EditArticle (s "articles" </> string)
+                ]
 
 
 
@@ -137,6 +154,14 @@ view model =
     case model.route of
         IndexArticles ->
             viewArticlesIndex model
+
+        EditArticle id ->
+            case model.editingArticle of
+                Just art ->
+                    viewArticleEdit art
+
+                Nothing ->
+                    viewNotFound
 
         NotFound ->
             viewNotFound
@@ -162,6 +187,17 @@ viewArticleListing art =
         ]
 
 
+viewArticleEdit : Article -> Browser.Document Msg
+viewArticleEdit art =
+    { title = "Editing article '" ++ art.title ++ "'"
+    , body =
+        [ article [ id art.id ]
+            [ h2 [] [ text art.title ]
+            ]
+        ]
+    }
+
+
 
 -- CMD
 
@@ -171,4 +207,12 @@ fetchArticles =
     Http.get
         { url = "/api/articles"
         , expect = Http.expectJson GotArticles Article.listDecoder
+        }
+
+
+fetchArticleBody : Article.Id -> Cmd Msg
+fetchArticleBody artId =
+    Http.get
+        { url = "/api/articles/" ++ artId
+        , expect = Http.expectJson GotArticleBody Article.decoder
         }

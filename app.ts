@@ -8,9 +8,11 @@ import {
   serve,
 } from "./deps.ts";
 import indexArticles from "./backend/articles/index.ts";
+import getArticle from "./backend/articles/get.ts";
 import initDatabase from "./backend/db/init.ts";
 
-function handleRoutingError() {
+function handleRoutingError(err) {
+  console.error("Problem serving the request: ", err);
   return new Response("Sorry, that page doesn't exist.", { status: 404 });
 }
 
@@ -24,6 +26,7 @@ await initDatabase(pool);
 
 const routes: Routes = {
   "/api/articles": GET(indexArticles(pool)),
+  "/api/articles/:id": GET(getArticle(pool)),
   "/api*": () => {
     return new Response("Backend route not found", { status: 404 });
   },
@@ -40,5 +43,5 @@ const routes: Routes = {
     },
   ),
 };
-
+console.log(routes);
 serve(routes, [logger], { port: 8080, onError: handleRoutingError });

@@ -1,6 +1,8 @@
 module Article exposing
     ( Article
     , Articles
+    , Id
+    , decoder
     , listDecoder
     , none
     )
@@ -30,12 +32,21 @@ type alias Id =
 
 decoder : Decoder Article
 decoder =
-    JD.map3 Article
-        (field "id" string)
-        (field "title" string)
-        (field "body" string)
+    field "article" <|
+        JD.map3 Article
+            (field "id" string)
+            (field "title" string)
+            (field "body" string)
 
 
 listDecoder : Decoder Articles
 listDecoder =
-    field "articles" (list decoder)
+    field "articles" (list metaOnlyDecoder)
+
+
+metaOnlyDecoder : Decoder Article
+metaOnlyDecoder =
+    JD.map3 Article
+        (field "id" string)
+        (field "title" string)
+        (JD.succeed "")

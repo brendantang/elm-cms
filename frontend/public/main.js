@@ -10757,9 +10757,22 @@ var $author$project$Main$IndexArticles = {$: 'IndexArticles'};
 var $author$project$Article$none = _List_Nil;
 var $author$project$RequestStatus$Fetching = {$: 'Fetching'};
 var $author$project$Main$NotFound = {$: 'NotFound'};
-var $author$project$Main$GotArticles = function (a) {
-	return {$: 'GotArticles', a: a};
+var $author$project$Main$GotArticleBody = function (a) {
+	return {$: 'GotArticleBody', a: a};
 };
+var $author$project$Article$Article = F3(
+	function (id, title, body) {
+		return {body: body, id: id, title: title};
+	});
+var $author$project$Article$decoder = A2(
+	$elm$json$Json$Decode$field,
+	'article',
+	A4(
+		$elm$json$Json$Decode$map3,
+		$author$project$Article$Article,
+		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, 'body', $elm$json$Json$Decode$string)));
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -11008,20 +11021,26 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $author$project$Article$Article = F3(
-	function (id, title, body) {
-		return {body: body, id: id, title: title};
-	});
-var $author$project$Article$decoder = A4(
+var $author$project$Main$fetchArticleBody = function (artId) {
+	return $elm$http$Http$get(
+		{
+			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+			url: '/api/articles/' + artId
+		});
+};
+var $author$project$Main$GotArticles = function (a) {
+	return {$: 'GotArticles', a: a};
+};
+var $author$project$Article$metaOnlyDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$Article$Article,
 	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'body', $elm$json$Json$Decode$string));
+	$elm$json$Json$Decode$succeed(''));
 var $author$project$Article$listDecoder = A2(
 	$elm$json$Json$Decode$field,
 	'articles',
-	$elm$json$Json$Decode$list($author$project$Article$decoder));
+	$elm$json$Json$Decode$list($author$project$Article$metaOnlyDecoder));
 var $author$project$Main$fetchArticles = $elm$http$Http$get(
 	{
 		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticles, $author$project$Article$listDecoder),
@@ -11146,6 +11165,9 @@ var $elm$url$Url$Parser$parse = F2(
 					url.fragment,
 					$elm$core$Basics$identity)));
 	});
+var $author$project$Main$EditArticle = function (a) {
+	return {$: 'EditArticle', a: a};
+};
 var $elm$url$Url$Parser$Parser = function (a) {
 	return {$: 'Parser', a: a};
 };
@@ -11219,14 +11241,72 @@ var $elm$url$Url$Parser$s = function (str) {
 			}
 		});
 };
-var $author$project$Main$routeParser = $elm$url$Url$Parser$oneOf(
-	_List_fromArray(
-		[
-			A2(
-			$elm$url$Url$Parser$map,
-			$author$project$Main$IndexArticles,
-			$elm$url$Url$Parser$s('admin'))
-		]));
+var $elm$url$Url$Parser$slash = F2(
+	function (_v0, _v1) {
+		var parseBefore = _v0.a;
+		var parseAfter = _v1.a;
+		return $elm$url$Url$Parser$Parser(
+			function (state) {
+				return A2(
+					$elm$core$List$concatMap,
+					parseAfter,
+					parseBefore(state));
+			});
+	});
+var $elm$url$Url$Parser$custom = F2(
+	function (tipe, stringToSomething) {
+		return $elm$url$Url$Parser$Parser(
+			function (_v0) {
+				var visited = _v0.visited;
+				var unvisited = _v0.unvisited;
+				var params = _v0.params;
+				var frag = _v0.frag;
+				var value = _v0.value;
+				if (!unvisited.b) {
+					return _List_Nil;
+				} else {
+					var next = unvisited.a;
+					var rest = unvisited.b;
+					var _v2 = stringToSomething(next);
+					if (_v2.$ === 'Just') {
+						var nextValue = _v2.a;
+						return _List_fromArray(
+							[
+								A5(
+								$elm$url$Url$Parser$State,
+								A2($elm$core$List$cons, next, visited),
+								rest,
+								params,
+								frag,
+								value(nextValue))
+							]);
+					} else {
+						return _List_Nil;
+					}
+				}
+			});
+	});
+var $elm$url$Url$Parser$string = A2($elm$url$Url$Parser$custom, 'STRING', $elm$core$Maybe$Just);
+var $elm$url$Url$Parser$top = $elm$url$Url$Parser$Parser(
+	function (state) {
+		return _List_fromArray(
+			[state]);
+	});
+var $author$project$Main$routeParser = A2(
+	$elm$url$Url$Parser$slash,
+	$elm$url$Url$Parser$s('admin'),
+	$elm$url$Url$Parser$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$url$Url$Parser$map, $author$project$Main$IndexArticles, $elm$url$Url$Parser$top),
+				A2(
+				$elm$url$Url$Parser$map,
+				$author$project$Main$EditArticle,
+				A2(
+					$elm$url$Url$Parser$slash,
+					$elm$url$Url$Parser$s('articles'),
+					$elm$url$Url$Parser$string))
+			])));
 var $author$project$Main$updateRoute = F2(
 	function (url, model) {
 		var newRoute = A2(
@@ -11236,19 +11316,27 @@ var $author$project$Main$updateRoute = F2(
 		var newModel = _Utils_update(
 			model,
 			{route: newRoute});
-		if (newRoute.$ === 'IndexArticles') {
-			return _Utils_Tuple2(
-				_Utils_update(
-					newModel,
-					{status: $author$project$RequestStatus$Fetching}),
-				$author$project$Main$fetchArticles);
-		} else {
-			return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+		switch (newRoute.$) {
+			case 'IndexArticles':
+				return _Utils_Tuple2(
+					_Utils_update(
+						newModel,
+						{status: $author$project$RequestStatus$Fetching}),
+					$author$project$Main$fetchArticles);
+			case 'EditArticle':
+				var artId = newRoute.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						newModel,
+						{status: $author$project$RequestStatus$Fetching}),
+					$author$project$Main$fetchArticleBody(artId));
+			default:
+				return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$Main$init = F3(
 	function (_v0, url, key) {
-		var model = {articles: $author$project$Article$none, key: key, route: $author$project$Main$IndexArticles, status: $author$project$RequestStatus$Idle};
+		var model = {articles: $author$project$Article$none, editingArticle: $elm$core$Maybe$Nothing, key: key, route: $author$project$Main$IndexArticles, status: $author$project$RequestStatus$Idle};
 		return A2($author$project$Main$updateRoute, url, model);
 	});
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -11327,7 +11415,7 @@ var $author$project$Main$update = F2(
 			case 'UrlChanged':
 				var url = msg.a;
 				return A2($author$project$Main$updateRoute, url, model);
-			default:
+			case 'GotArticles':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var articles = result.a;
@@ -11346,9 +11434,56 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
+			default:
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var art = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								editingArticle: $elm$core$Maybe$Just(art),
+								status: $author$project$RequestStatus$Idle
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var e = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								status: $author$project$RequestStatus$Problem('Could not fetch article from backend')
+							}),
+						$elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $author$project$Main$viewArticleEdit = function (art) {
+	return {
+		body: _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$article,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(art.id)
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$h2,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(art.title)
+							]))
+					]))
+			]),
+		title: 'Editing article \'' + (art.title + '\'')
+	};
+};
 var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $author$project$Main$viewArticleListing = function (art) {
 	return A2(
@@ -11393,13 +11528,23 @@ var $author$project$Main$viewNotFound = {
 };
 var $author$project$Main$view = function (model) {
 	var _v0 = model.route;
-	if (_v0.$ === 'IndexArticles') {
-		return $author$project$Main$viewArticlesIndex(model);
-	} else {
-		return $author$project$Main$viewNotFound;
+	switch (_v0.$) {
+		case 'IndexArticles':
+			return $author$project$Main$viewArticlesIndex(model);
+		case 'EditArticle':
+			var id = _v0.a;
+			var _v1 = model.editingArticle;
+			if (_v1.$ === 'Just') {
+				var art = _v1.a;
+				return $author$project$Main$viewArticleEdit(art);
+			} else {
+				return $author$project$Main$viewNotFound;
+			}
+		default:
+			return $author$project$Main$viewNotFound;
 	}
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, body : String.String }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, body : String.String }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));
