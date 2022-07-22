@@ -1,4 +1,4 @@
-A little template to make an app with a frontend built in Elm, and a backend in Deno.
+A little cms app built in Elm, backend in Deno.
 
 Scripts:
 - `build` compiles the Elm frontend. You can pass arguments to `elm make`, like `scripts/build --optimize`.
