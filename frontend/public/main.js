@@ -10760,19 +10760,23 @@ var $author$project$Main$NotFound = {$: 'NotFound'};
 var $author$project$Main$GotArticleBody = function (a) {
 	return {$: 'GotArticleBody', a: a};
 };
-var $author$project$Article$Article = F3(
-	function (id, title, body) {
-		return {body: body, id: id, title: title};
+var $author$project$Article$Article = F6(
+	function (id, title, slug, body, updatedAt, saved) {
+		return {body: body, id: id, saved: saved, slug: slug, title: title, updatedAt: updatedAt};
 	});
+var $elm$json$Json$Decode$map6 = _Json_map6;
 var $author$project$Article$decoder = A2(
 	$elm$json$Json$Decode$field,
 	'article',
-	A4(
-		$elm$json$Json$Decode$map3,
+	A7(
+		$elm$json$Json$Decode$map6,
 		$author$project$Article$Article,
 		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
 		A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, 'body', $elm$json$Json$Decode$string)));
+		A2($elm$json$Json$Decode$field, 'slug', $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, 'body', $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
+		$elm$json$Json$Decode$succeed(true)));
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -11031,12 +11035,15 @@ var $author$project$Main$fetchArticleBody = function (artId) {
 var $author$project$Main$GotArticles = function (a) {
 	return {$: 'GotArticles', a: a};
 };
-var $author$project$Article$metaOnlyDecoder = A4(
-	$elm$json$Json$Decode$map3,
+var $author$project$Article$metaOnlyDecoder = A7(
+	$elm$json$Json$Decode$map6,
 	$author$project$Article$Article,
 	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
-	$elm$json$Json$Decode$succeed(''));
+	A2($elm$json$Json$Decode$field, 'slug', $elm$json$Json$Decode$string),
+	$elm$json$Json$Decode$succeed(''),
+	A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
+	$elm$json$Json$Decode$succeed(true));
 var $author$project$Article$listDecoder = A2(
 	$elm$json$Json$Decode$field,
 	'articles',
@@ -11349,6 +11356,40 @@ var $author$project$RequestStatus$Problem = function (a) {
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $author$project$Article$encode = function (art) {
+	return $elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'title',
+				$elm$json$Json$Encode$string(art.title)),
+				_Utils_Tuple2(
+				'slug',
+				$elm$json$Json$Encode$string(art.slug)),
+				_Utils_Tuple2(
+				'body',
+				$elm$json$Json$Encode$string(art.body))
+			]));
+};
+var $elm$http$Http$jsonBody = function (value) {
+	return A2(
+		_Http_pair,
+		'application/json',
+		A2($elm$json$Json$Encode$encode, 0, value));
+};
+var $elm$http$Http$post = function (r) {
+	return $elm$http$Http$request(
+		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $author$project$Main$saveArticle = function (art) {
+	return $elm$http$Http$post(
+		{
+			body: $elm$http$Http$jsonBody(
+				$author$project$Article$encode(art)),
+			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+			url: '/api/articles/' + art.id
+		});
+};
 var $elm$url$Url$addPort = F2(
 	function (maybePort, starter) {
 		if (maybePort.$ === 'Nothing') {
@@ -11393,8 +11434,19 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
+var $author$project$Main$updateArticle = F2(
+	function (msg, art) {
+		var unsaved = _Utils_update(
+			art,
+			{saved: false});
+		var body = msg.a;
+		return _Utils_update(
+			unsaved,
+			{body: body});
+	});
 var $author$project$Main$update = F2(
 	function (msg, model) {
+		var noop = _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		switch (msg.$) {
 			case 'LinkClicked':
 				var urlRequest = msg.a;
@@ -11422,7 +11474,7 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{articles: articles, status: $author$project$RequestStatus$Idle}),
+							{articles: articles, editingArticle: $elm$core$Maybe$Nothing, status: $author$project$RequestStatus$Idle}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var e = result.a;
@@ -11434,7 +11486,7 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
-			default:
+			case 'GotArticleBody':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var art = result.a;
@@ -11456,10 +11508,55 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
+			case 'ChangedArticle':
+				var editMsg = msg.a;
+				var _v4 = model.editingArticle;
+				if (_v4.$ === 'Just') {
+					var art = _v4.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								editingArticle: $elm$core$Maybe$Just(
+									A2($author$project$Main$updateArticle, editMsg, art))
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return noop;
+				}
+			default:
+				var _v5 = model.editingArticle;
+				if (_v5.$ === 'Just') {
+					var art = _v5.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{status: $author$project$RequestStatus$Fetching}),
+						$author$project$Main$saveArticle(art));
+				} else {
+					return noop;
+				}
 		}
 	});
+var $author$project$Main$ChangedArticle = function (a) {
+	return {$: 'ChangedArticle', a: a};
+};
+var $author$project$Main$ChangedBody = function (a) {
+	return {$: 'ChangedBody', a: a};
+};
+var $author$project$Main$SaveArticle = {$: 'SaveArticle'};
 var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $author$project$Main$viewArticleEdit = function (art) {
 	return {
 		body: _List_fromArray(
@@ -11478,7 +11575,37 @@ var $author$project$Main$viewArticleEdit = function (art) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text(art.title)
-							]))
+							])),
+						A2(
+						$elm$html$Html$textarea,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$value(art.body),
+								$elm$html$Html$Events$onInput(
+								function (s) {
+									return $author$project$Main$ChangedArticle(
+										$author$project$Main$ChangedBody(s));
+								})
+							]),
+						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$span,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(art.updatedAt)
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$Main$SaveArticle),
+						$elm$html$Html$Attributes$disabled(art.saved)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Save')
 					]))
 			]),
 		title: 'Editing article \'' + (art.title + '\'')
@@ -11547,4 +11674,4 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, body : String.String }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, slug : String.String, body : String.String, updatedAt : String.String, saved : Basics.Bool }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"],"ChangedArticle":["Main.EditArticleMsg"],"SaveArticle":[]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Main.EditArticleMsg":{"args":[],"tags":{"ChangedBody":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));

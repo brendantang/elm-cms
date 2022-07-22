@@ -3,12 +3,13 @@ module Main exposing (..)
 import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, h2, h3, text)
-import Html.Attributes as Attr exposing (href, id)
+import Html exposing (Html, a, article, button, h2, h3, span, text, textarea)
+import Html.Attributes exposing (disabled, href, id, value)
+import Html.Events exposing (onClick, onInput)
 import Http
 import RequestStatus exposing (RequestStatus(..))
 import Url
-import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, top)
+import Url.Parser exposing ((</>), Parser, map, oneOf, parse, s, string, top)
 
 
 
@@ -63,10 +64,20 @@ type Msg
     | UrlChanged Url.Url
     | GotArticles (Result Http.Error Articles)
     | GotArticleBody (Result Http.Error Article)
+    | ChangedArticle EditArticleMsg
+    | SaveArticle
+
+
+type EditArticleMsg
+    = ChangedBody String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        noop =
+            ( model, Cmd.none )
+    in
     case msg of
         LinkClicked urlRequest ->
             case urlRequest of
@@ -82,7 +93,7 @@ update msg model =
         GotArticles result ->
             case result of
                 Ok articles ->
-                    ( { model | articles = articles, status = Idle }, Cmd.none )
+                    ( { model | articles = articles, editingArticle = Nothing, status = Idle }, Cmd.none )
 
                 Err e ->
                     ( { model | status = Problem "Could not fetch articles from backend" }, Cmd.none )
@@ -94,6 +105,22 @@ update msg model =
 
                 Err e ->
                     ( { model | status = Problem "Could not fetch article from backend" }, Cmd.none )
+
+        ChangedArticle editMsg ->
+            case model.editingArticle of
+                Just art ->
+                    ( { model | editingArticle = Just (updateArticle editMsg art) }, Cmd.none )
+
+                Nothing ->
+                    noop
+
+        SaveArticle ->
+            case model.editingArticle of
+                Just art ->
+                    ( { model | status = Fetching }, saveArticle art )
+
+                Nothing ->
+                    noop
 
 
 updateRoute : Url.Url -> Model -> ( Model, Cmd Msg )
@@ -115,6 +142,17 @@ updateRoute url model =
 
         _ ->
             ( newModel, Cmd.none )
+
+
+updateArticle : EditArticleMsg -> Article -> Article
+updateArticle msg art =
+    let
+        unsaved =
+            { art | saved = False }
+    in
+    case msg of
+        ChangedBody body ->
+            { unsaved | body = body }
 
 
 
@@ -193,7 +231,14 @@ viewArticleEdit art =
     , body =
         [ article [ id art.id ]
             [ h2 [] [ text art.title ]
+            , textarea
+                [ value art.body
+                , onInput (\s -> ChangedArticle (ChangedBody s))
+                ]
+                []
             ]
+        , span [] [ text art.updatedAt ]
+        , button [ onClick SaveArticle, disabled art.saved ] [ text "Save" ]
         ]
     }
 
@@ -214,5 +259,14 @@ fetchArticleBody : Article.Id -> Cmd Msg
 fetchArticleBody artId =
     Http.get
         { url = "/api/articles/" ++ artId
+        , expect = Http.expectJson GotArticleBody Article.decoder
+        }
+
+
+saveArticle : Article -> Cmd Msg
+saveArticle art =
+    Http.post
+        { url = "/api/articles/" ++ art.id
+        , body = Http.jsonBody (Article.encode art)
         , expect = Http.expectJson GotArticleBody Article.decoder
         }

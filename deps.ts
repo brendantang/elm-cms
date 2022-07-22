@@ -1,8 +1,9 @@
 export {
   file,
   filesWithFallback,
-  json,
   GET,
+  handleMethods,
+  json,
   logger,
   type RouteHandler,
   type Routes,

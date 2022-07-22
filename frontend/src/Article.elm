@@ -3,17 +3,22 @@ module Article exposing
     , Articles
     , Id
     , decoder
+    , encode
     , listDecoder
     , none
     )
 
-import Json.Decode as JD exposing (Decoder, field, list, string)
+import Json.Decode as JD exposing (Decoder, field, list, string, succeed)
+import Json.Encode as JE exposing (object)
 
 
 type alias Article =
     { id : Id
     , title : String
+    , slug : String
     , body : String
+    , updatedAt : String
+    , saved : Bool
     }
 
 
@@ -30,13 +35,20 @@ type alias Id =
     String
 
 
+
+-- JSON
+
+
 decoder : Decoder Article
 decoder =
     field "article" <|
-        JD.map3 Article
+        JD.map6 Article
             (field "id" string)
             (field "title" string)
+            (field "slug" string)
             (field "body" string)
+            (field "updated_at" string)
+            (succeed True)
 
 
 listDecoder : Decoder Articles
@@ -46,7 +58,25 @@ listDecoder =
 
 metaOnlyDecoder : Decoder Article
 metaOnlyDecoder =
-    JD.map3 Article
+    JD.map6 Article
         (field "id" string)
         (field "title" string)
-        (JD.succeed "")
+        (field "slug" string)
+        (succeed "")
+        (field "updated_at" string)
+        (succeed True)
+
+
+encode : Article -> JE.Value
+encode art =
+    object
+        [ ( "title"
+          , JE.string art.title
+          )
+        , ( "slug"
+          , JE.string art.slug
+          )
+        , ( "body"
+          , JE.string art.body
+          )
+        ]
