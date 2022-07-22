@@ -10980,7 +10980,7 @@ var $author$project$Main$init = function (_v0) {
 		$elm$http$Http$get(
 			{
 				expect: $elm$http$Http$expectString($author$project$Main$GotText),
-				url: 'https://elm-lang.org/assets/public-opinion.txt'
+				url: '/api/hello'
 			}));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -11008,7 +11008,7 @@ var $elm$html$Html$pre = _VirtualDom_node('pre');
 var $author$project$Main$view = function (model) {
 	switch (model.$) {
 		case 'Failure':
-			return $elm$html$Html$text('I was unable to load your book.');
+			return $elm$html$Html$text('I was unable to load a response from the backend.');
 		case 'Loading':
 			return $elm$html$Html$text('Loading...');
 		default:
