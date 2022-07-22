@@ -1,11 +1,10 @@
 import { file, filesWithFallback, GET, Routes, serve } from "./deps.ts";
+import helloHandler from "./backend/hello.ts";
 
 const indexHandler = file(`${Deno.cwd()}/frontend/public/index.html`);
 
 const routes: Routes = {
-  "/api/hello": () => {
-    return new Response("Hello world, from the backend server!");
-  },
+  "/api/hello": GET(helloHandler),
   "/api*": () => {
     return new Response("Backend route not found", { status: 404 });
   },
