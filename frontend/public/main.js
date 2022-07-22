@@ -11260,6 +11260,51 @@ var $author$project$RequestStatus$Problem = function (a) {
 	return {$: 'Problem', a: a};
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
+var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
+var $elm$url$Url$addPort = F2(
+	function (maybePort, starter) {
+		if (maybePort.$ === 'Nothing') {
+			return starter;
+		} else {
+			var port_ = maybePort.a;
+			return starter + (':' + $elm$core$String$fromInt(port_));
+		}
+	});
+var $elm$url$Url$addPrefixed = F3(
+	function (prefix, maybeSegment, starter) {
+		if (maybeSegment.$ === 'Nothing') {
+			return starter;
+		} else {
+			var segment = maybeSegment.a;
+			return _Utils_ap(
+				starter,
+				_Utils_ap(prefix, segment));
+		}
+	});
+var $elm$url$Url$toString = function (url) {
+	var http = function () {
+		var _v0 = url.protocol;
+		if (_v0.$ === 'Http') {
+			return 'http://';
+		} else {
+			return 'https://';
+		}
+	}();
+	return A3(
+		$elm$url$Url$addPrefixed,
+		'#',
+		url.fragment,
+		A3(
+			$elm$url$Url$addPrefixed,
+			'?',
+			url.query,
+			_Utils_ap(
+				A2(
+					$elm$url$Url$addPort,
+					url.port_,
+					_Utils_ap(http, url.host)),
+				url.path)));
+};
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -11267,7 +11312,12 @@ var $author$project$Main$update = F2(
 				var urlRequest = msg.a;
 				if (urlRequest.$ === 'Internal') {
 					var url = urlRequest.a;
-					return A2($author$project$Main$updateRoute, url, model);
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$browser$Browser$Navigation$pushUrl,
+							model.key,
+							$elm$url$Url$toString(url)));
 				} else {
 					var href = urlRequest.a;
 					return _Utils_Tuple2(
@@ -11298,14 +11348,39 @@ var $author$project$Main$update = F2(
 				}
 		}
 	});
-var $elm$core$Debug$toString = _Debug_toString;
+var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $author$project$Main$viewArticleListing = function (art) {
+	return A2(
+		$elm$html$Html$article,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id(art.id)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h3,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(art.title)
+					])),
+				A2(
+				$elm$html$Html$a,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$href('/admin/articles/' + art.id)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('edit')
+					]))
+			]));
+};
 var $author$project$Main$viewArticlesIndex = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				$elm$html$Html$text(
-				$elm$core$Debug$toString(model))
-			]),
+		body: A2($elm$core$List$map, $author$project$Main$viewArticleListing, model.articles),
 		title: 'Articles'
 	};
 };

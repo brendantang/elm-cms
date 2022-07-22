@@ -3,7 +3,8 @@ module Main exposing (..)
 import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, pre, text)
+import Html exposing (Html, a, article, h3, text)
+import Html.Attributes as Attr exposing (href, id)
 import Http
 import RequestStatus exposing (RequestStatus(..))
 import Url
@@ -67,7 +68,7 @@ update msg model =
         LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    updateRoute url model
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
                     ( model, Nav.load href )
@@ -149,10 +150,16 @@ viewNotFound =
 viewArticlesIndex : Model -> Browser.Document Msg
 viewArticlesIndex model =
     { title = "Articles"
-    , body =
-        [ text (Debug.toString model)
-        ]
+    , body = List.map viewArticleListing model.articles
     }
+
+
+viewArticleListing : Article -> Html Msg
+viewArticleListing art =
+    article [ id art.id ]
+        [ h3 [] [ text art.title ]
+        , a [ href ("/admin/articles/" ++ art.id) ] [ text "edit" ]
+        ]
 
 
 
