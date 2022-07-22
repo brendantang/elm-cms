@@ -1,0 +1,3 @@
+ #!/bin/bash
+
+cd frontend && elm make $@ --output=public/main.js src/Main.elm
