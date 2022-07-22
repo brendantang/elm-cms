@@ -2,6 +2,7 @@ export {
   file,
   filesWithFallback,
   GET,
+  logger,
   type Routes,
   serve,
 } from "https://raw.githubusercontent.com/brendantang/routing-framework/main/mod.ts";

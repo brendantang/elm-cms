@@ -2,6 +2,7 @@ import {
   file,
   filesWithFallback,
   GET,
+  logger,
   postgres,
   Routes,
   serve,
@@ -11,17 +12,26 @@ import init from "./backend/db/init.ts";
 
 const indexHandler = file(`${Deno.cwd()}/frontend/public/index.html`);
 
+function handleRoutingError(err) {
+  return new Response("Sorry, that page doesn't exist.", { status: 404 });
+}
+
 const routes: Routes = {
   "/api/hello": GET(helloHandler),
   "/api*": () => {
     return new Response("Backend route not found", { status: 404 });
   },
-  "/:filename*": GET(
+  "/admin/:filename*": GET(
     filesWithFallback(
       `${Deno.cwd()}/frontend/public/`,
       "filename",
       indexHandler,
     ),
+  ),
+  "/": GET(
+    function () {
+      return new Response("TODO: Serve content");
+    },
   ),
 };
 
@@ -34,4 +44,4 @@ const pool = new postgres.Pool(DATABASE_URL, 20);
 const client = await pool.connect();
 
 await init(client);
-serve(routes);
+serve(routes, [logger], { port: 8080, onError: handleRoutingError });
