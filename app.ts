@@ -7,17 +7,23 @@ import {
   Routes,
   serve,
 } from "./deps.ts";
-import helloHandler from "./backend/hello.ts";
-import init from "./backend/db/init.ts";
+import indexArticles from "./backend/articles/index.ts";
+import initDatabase from "./backend/db/init.ts";
 
-const indexHandler = file(`${Deno.cwd()}/frontend/public/index.html`);
-
-function handleRoutingError(err) {
+function handleRoutingError() {
   return new Response("Sorry, that page doesn't exist.", { status: 404 });
 }
 
+const DATABASE_URL = Deno.env.get("DATABASE_URL");
+if (!DATABASE_URL) {
+  throw `I can't start up without a database connection string.
+   Try starting again with an environment variable named 'DATABASE_URL'`;
+}
+const pool = new postgres.Pool(DATABASE_URL, 20);
+await initDatabase(pool);
+
 const routes: Routes = {
-  "/api/hello": GET(helloHandler),
+  "/api/articles": GET(indexArticles(pool)),
   "/api*": () => {
     return new Response("Backend route not found", { status: 404 });
   },
@@ -25,7 +31,7 @@ const routes: Routes = {
     filesWithFallback(
       `${Deno.cwd()}/frontend/public/`,
       "filename",
-      indexHandler,
+      file(`${Deno.cwd()}/frontend/public/index.html`),
     ),
   ),
   "/": GET(
@@ -35,13 +41,4 @@ const routes: Routes = {
   ),
 };
 
-const DATABASE_URL = Deno.env.get("DATABASE_URL");
-if (!DATABASE_URL) {
-  throw `I can't start up without a database connection string.
-   Try starting again with an environment variable named 'DATABASE_URL'`;
-}
-const pool = new postgres.Pool(DATABASE_URL, 20);
-const client = await pool.connect();
-
-await init(client);
 serve(routes, [logger], { port: 8080, onError: handleRoutingError });

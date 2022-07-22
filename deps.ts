@@ -1,8 +1,10 @@
 export {
   file,
   filesWithFallback,
+  json,
   GET,
   logger,
+  type RouteHandler,
   type Routes,
   serve,
 } from "https://raw.githubusercontent.com/brendantang/routing-framework/main/mod.ts";

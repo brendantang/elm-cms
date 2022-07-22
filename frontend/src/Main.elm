@@ -1,9 +1,11 @@
 module Main exposing (..)
 
+import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (Html, pre, text)
 import Http
+import RequestStatus exposing (RequestStatus(..))
 import Url
 import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, top)
 
@@ -12,6 +14,7 @@ import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, to
 -- MAIN
 
 
+main : Program () Model Msg
 main =
     Browser.application
         { init = init
@@ -30,6 +33,8 @@ main =
 type alias Model =
     { key : Nav.Key
     , route : Route
+    , articles : Articles
+    , status : RequestStatus
     }
 
 
@@ -39,6 +44,8 @@ init _ url key =
         model =
             { key = key
             , route = IndexArticles
+            , articles = Article.none
+            , status = Idle
             }
     in
     updateRoute url model
@@ -51,6 +58,7 @@ init _ url key =
 type Msg
     = LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | GotArticles (Result Http.Error Articles)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,13 +67,21 @@ update msg model =
         LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( model, Cmd.none )
+                    updateRoute url model
 
                 Browser.External href ->
                     ( model, Nav.load href )
 
         UrlChanged url ->
             updateRoute url model
+
+        GotArticles result ->
+            case result of
+                Ok articles ->
+                    ( { model | articles = articles, status = Idle }, Cmd.none )
+
+                Err e ->
+                    ( { model | status = Problem "Could not fetch articles from backend" }, Cmd.none )
 
 
 updateRoute : Url.Url -> Model -> ( Model, Cmd Msg )
@@ -74,8 +90,16 @@ updateRoute url model =
         newRoute =
             parse routeParser url
                 |> Maybe.withDefault NotFound
+
+        newModel =
+            { model | route = newRoute }
     in
-    ( { model | route = newRoute }, Cmd.none )
+    case newRoute of
+        IndexArticles ->
+            ( { newModel | status = Fetching }, fetchArticles )
+
+        _ ->
+            ( newModel, Cmd.none )
 
 
 
@@ -129,3 +153,15 @@ viewArticlesIndex model =
         [ text (Debug.toString model)
         ]
     }
+
+
+
+-- CMD
+
+
+fetchArticles : Cmd Msg
+fetchArticles =
+    Http.get
+        { url = "/api/articles"
+        , expect = Http.expectJson GotArticles Article.listDecoder
+        }
