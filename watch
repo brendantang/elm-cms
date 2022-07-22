@@ -1,3 +1,0 @@
- #!/bin/bash
-
-fswatch -0 frontend/src/*.elm frontend/public/index.html | xargs -0 -n 1 -I {} ./build --debug
