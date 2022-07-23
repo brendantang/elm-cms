@@ -11861,11 +11861,11 @@ var $justgage$tachyons_elm$Tachyons$Classes$ph3 = 'ph3';
 var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
 var $justgage$tachyons_elm$Tachyons$Classes$ph4_m = 'ph4-m';
 var $justgage$tachyons_elm$Tachyons$Classes$ph5_l = 'ph5-l';
-var $justgage$tachyons_elm$Tachyons$Classes$pt4 = 'pt4';
 var $justgage$tachyons_elm$Tachyons$Classes$pv2 = 'pv2';
 var $justgage$tachyons_elm$Tachyons$Classes$pv3 = 'pv3';
 var $justgage$tachyons_elm$Tachyons$Classes$pv4_ns = 'pv4-ns';
 var $justgage$tachyons_elm$Tachyons$Classes$sans_serif = 'sans-serif';
+var $justgage$tachyons_elm$Tachyons$Classes$h4 = 'h4';
 var $elm$core$List$repeatHelp = F3(
 	function (result, n, value) {
 		repeatHelp:
@@ -11897,7 +11897,43 @@ var $author$project$RequestStatus$spinner = A2(
 		$elm$core$List$repeat,
 		4,
 		A2($elm$html$Html$div, _List_Nil, _List_Nil)));
-var $justgage$tachyons_elm$Tachyons$Classes$w4 = 'w4';
+var $justgage$tachyons_elm$Tachyons$Classes$bg_washed_red = 'bg-washed-red';
+var $justgage$tachyons_elm$Tachyons$Classes$dark_red = 'dark-red';
+var $justgage$tachyons_elm$Tachyons$Classes$lh_title = 'lh-title';
+var $justgage$tachyons_elm$Tachyons$Classes$mb4 = 'mb4';
+var $justgage$tachyons_elm$Tachyons$Classes$pa3 = 'pa3';
+var $author$project$RequestStatus$viewProblem = function (description) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$justgage$tachyons_elm$Tachyons$classes(
+				_List_fromArray(
+					[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_center, $justgage$tachyons_elm$Tachyons$Classes$pa3, $justgage$tachyons_elm$Tachyons$Classes$bg_washed_red, $justgage$tachyons_elm$Tachyons$Classes$dark_red, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$mb4]))
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$span,
+				_List_fromArray(
+					[
+						$justgage$tachyons_elm$Tachyons$classes(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$lh_title, $justgage$tachyons_elm$Tachyons$Classes$b]))
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Problem! ')
+					])),
+				A2(
+				$elm$html$Html$span,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(description)
+					]))
+			]));
+};
 var $author$project$RequestStatus$view = function (status) {
 	return A2(
 		$elm$html$Html$div,
@@ -11905,7 +11941,7 @@ var $author$project$RequestStatus$view = function (status) {
 			[
 				$justgage$tachyons_elm$Tachyons$classes(
 				_List_fromArray(
-					[$justgage$tachyons_elm$Tachyons$Classes$w4]))
+					[$justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$h4, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$justify_center]))
 			]),
 		_List_fromArray(
 			[
@@ -11917,7 +11953,7 @@ var $author$project$RequestStatus$view = function (status) {
 						return $author$project$RequestStatus$spinner;
 					default:
 						var description = status.a;
-						return $elm$html$Html$text('Problem!');
+						return $author$project$RequestStatus$viewProblem(description);
 				}
 			}()
 			]));
@@ -11974,8 +12010,7 @@ var $author$project$Main$layout = function (_v0) {
 										_List_fromArray(
 											[
 												$elm$html$Html$text('Admin dashboard')
-											])),
-										$author$project$RequestStatus$view(status)
+											]))
 									])),
 								A2(
 								$elm$html$Html$a,
@@ -12002,14 +12037,29 @@ var $author$project$Main$layout = function (_v0) {
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$main_,
+								$elm$html$Html$div,
 								_List_fromArray(
 									[
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$pt4, $justgage$tachyons_elm$Tachyons$Classes$ph4, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds]))
+											[$justgage$tachyons_elm$Tachyons$Classes$ph4, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds]))
 									]),
-								body)
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$main_,
+										_List_Nil,
+										function () {
+											if (status.$ === 'Idle') {
+												return body;
+											} else {
+												return _List_fromArray(
+													[
+														$author$project$RequestStatus$view(status)
+													]);
+											}
+										}())
+									]))
 							]))
 					]))
 			]),
@@ -12043,7 +12093,6 @@ var $elm$html$Html$Events$onSubmit = function (msg) {
 			$elm$json$Json$Decode$succeed(msg)));
 };
 var $justgage$tachyons_elm$Tachyons$Classes$pa2 = 'pa2';
-var $justgage$tachyons_elm$Tachyons$Classes$pa4 = 'pa4';
 var $justgage$tachyons_elm$Tachyons$Classes$pointer = 'pointer';
 var $justgage$tachyons_elm$Tachyons$Classes$red = 'red';
 var $author$project$Validations$required = function (string) {
@@ -21003,7 +21052,7 @@ var $author$project$Main$viewArticleEdit = F2(
 								$elm$html$Html$Events$onSubmit($author$project$Main$SaveArticle),
 								$justgage$tachyons_elm$Tachyons$classes(
 								_List_fromArray(
-									[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$pa4, $justgage$tachyons_elm$Tachyons$Classes$black_80]))
+									[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$black_80]))
 							]),
 						_List_fromArray(
 							[

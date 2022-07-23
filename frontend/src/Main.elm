@@ -243,7 +243,6 @@ layout { title, status, body } =
                         , classes [ T.fw6, T.link, T.black ]
                         ]
                         [ text "Admin dashboard" ]
-                    , RequestStatus.view status
                     ]
                 , a
                     [ href "/"
@@ -265,8 +264,15 @@ layout { title, status, body } =
                 ]
             , div
                 [ classes [ T.flex, T.flex_column, T.items_center ] ]
-                [ main_ [ classes [ T.pt4, T.ph4, T.w_two_thirds ] ]
-                    body
+                [ div [ classes [ T.ph4, T.w_two_thirds ] ]
+                    [ main_ [] <|
+                        case status of
+                            Idle ->
+                                body
+
+                            _ ->
+                                [ RequestStatus.view status ]
+                    ]
                 ]
             ]
         ]
@@ -476,7 +482,7 @@ viewArticleEdit art model =
             [ form
                 [ id ("edit_" ++ art.id)
                 , onSubmit SaveArticle
-                , classes [ T.flex, T.flex_column, T.pa4, T.black_80 ]
+                , classes [ T.flex, T.flex_column, T.black_80 ]
                 ]
                 [ titleField
                 , bodyField
