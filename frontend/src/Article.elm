@@ -5,6 +5,7 @@ module Article exposing
     , decoder
     , encode
     , listDecoder
+    , new
     , none
     )
 
@@ -19,6 +20,17 @@ type alias Article =
     , body : String
     , updatedAt : String
     , saved : Bool
+    }
+
+
+new : Article
+new =
+    { id = ""
+    , title = ""
+    , slug = ""
+    , body = ""
+    , updatedAt = "never"
+    , saved = False
     }
 
 

@@ -11782,6 +11782,7 @@ var $author$project$Main$update = F2(
 				}
 		}
 	});
+var $author$project$Article$new = {body: '', id: '', saved: false, slug: '', title: '', updatedAt: 'never'};
 var $author$project$Main$ChangedArticle = function (a) {
 	return {$: 'ChangedArticle', a: a};
 };
@@ -11796,6 +11797,23 @@ var $author$project$Main$ChangedTitle = function (a) {
 };
 var $author$project$Main$SaveArticle = {$: 'SaveArticle'};
 var $elm$html$Html$article = _VirtualDom_node('article');
+var $elm$html$Html$aside = _VirtualDom_node('aside');
+var $justgage$tachyons_elm$Tachyons$Classes$b = 'b';
+var $justgage$tachyons_elm$Tachyons$Classes$b__black_20 = 'b--black-20';
+var $justgage$tachyons_elm$Tachyons$Classes$b__blue = 'b--blue';
+var $justgage$tachyons_elm$Tachyons$Classes$ba = 'ba';
+var $justgage$tachyons_elm$Tachyons$Classes$bg_animate = 'bg-animate';
+var $justgage$tachyons_elm$Tachyons$Classes$bg_blue = 'bg-blue';
+var $justgage$tachyons_elm$Tachyons$Classes$black_60 = 'black-60';
+var $justgage$tachyons_elm$Tachyons$Classes$black_80 = 'black-80';
+var $justgage$tachyons_elm$Tachyons$Classes$br2 = 'br2';
+var $justgage$tachyons_elm$Tachyons$Classes$button_reset = 'button-reset';
+var $justgage$tachyons_elm$Tachyons$classes = function (stringList) {
+	return $elm$html$Html$Attributes$class(
+		A2($elm$core$String$join, ' ', stringList));
+};
+var $justgage$tachyons_elm$Tachyons$Classes$db = 'db';
+var $justgage$tachyons_elm$Tachyons$Classes$dib = 'dib';
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -11805,10 +11823,202 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $justgage$tachyons_elm$Tachyons$Classes$f6 = 'f6';
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $justgage$tachyons_elm$Tachyons$Classes$flex = 'flex';
+var $justgage$tachyons_elm$Tachyons$Classes$flex_column = 'flex-column';
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $justgage$tachyons_elm$Tachyons$Classes$h5 = 'h5';
+var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_white = 'hover-bg-white';
+var $justgage$tachyons_elm$Tachyons$Classes$hover_blue = 'hover-blue';
+var $justgage$tachyons_elm$Tachyons$Classes$input_reset = 'input-reset';
+var $justgage$tachyons_elm$Tachyons$Classes$items_center = 'items-center';
+var $justgage$tachyons_elm$Tachyons$Classes$justify_center = 'justify-center';
 var $elm$html$Html$label = _VirtualDom_node('label');
+var $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray = 'bg-light-gray';
+var $justgage$tachyons_elm$Tachyons$Classes$bg_white_90 = 'bg-white-90';
+var $justgage$tachyons_elm$Tachyons$Classes$black = 'black';
+var $justgage$tachyons_elm$Tachyons$Classes$fw6 = 'fw6';
+var $elm$html$Html$header = _VirtualDom_node('header');
+var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_moon_gray = 'hover-bg-moon-gray';
+var $justgage$tachyons_elm$Tachyons$Classes$justify_between = 'justify-between';
+var $justgage$tachyons_elm$Tachyons$Classes$link = 'link';
+var $elm$html$Html$main_ = _VirtualDom_node('main');
+var $justgage$tachyons_elm$Tachyons$Classes$mb2 = 'mb2';
+var $justgage$tachyons_elm$Tachyons$Classes$ph3 = 'ph3';
+var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
+var $justgage$tachyons_elm$Tachyons$Classes$ph4_m = 'ph4-m';
+var $justgage$tachyons_elm$Tachyons$Classes$ph5_l = 'ph5-l';
+var $justgage$tachyons_elm$Tachyons$Classes$pt4 = 'pt4';
+var $justgage$tachyons_elm$Tachyons$Classes$pv2 = 'pv2';
+var $justgage$tachyons_elm$Tachyons$Classes$pv3 = 'pv3';
+var $justgage$tachyons_elm$Tachyons$Classes$pv4_ns = 'pv4-ns';
+var $justgage$tachyons_elm$Tachyons$Classes$sans_serif = 'sans-serif';
+var $elm$core$List$repeatHelp = F3(
+	function (result, n, value) {
+		repeatHelp:
+		while (true) {
+			if (n <= 0) {
+				return result;
+			} else {
+				var $temp$result = A2($elm$core$List$cons, value, result),
+					$temp$n = n - 1,
+					$temp$value = value;
+				result = $temp$result;
+				n = $temp$n;
+				value = $temp$value;
+				continue repeatHelp;
+			}
+		}
+	});
+var $elm$core$List$repeat = F2(
+	function (n, value) {
+		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
+	});
+var $author$project$RequestStatus$spinner = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('lds-ellipsis')
+		]),
+	A2(
+		$elm$core$List$repeat,
+		4,
+		A2($elm$html$Html$div, _List_Nil, _List_Nil)));
+var $justgage$tachyons_elm$Tachyons$Classes$w4 = 'w4';
+var $author$project$RequestStatus$view = function (status) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$justgage$tachyons_elm$Tachyons$classes(
+				_List_fromArray(
+					[$justgage$tachyons_elm$Tachyons$Classes$w4]))
+			]),
+		_List_fromArray(
+			[
+				function () {
+				switch (status.$) {
+					case 'Idle':
+						return $elm$html$Html$text('');
+					case 'Fetching':
+						return $author$project$RequestStatus$spinner;
+					default:
+						var description = status.a;
+						return $elm$html$Html$text('Problem!');
+				}
+			}()
+			]));
+};
+var $justgage$tachyons_elm$Tachyons$Classes$w5 = 'w5';
+var $justgage$tachyons_elm$Tachyons$Classes$w_100 = 'w-100';
+var $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds = 'w-two-thirds';
+var $author$project$Main$layout = function (_v0) {
+	var title = _v0.title;
+	var status = _v0.status;
+	var body = _v0.body;
+	return {
+		body: _List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$justgage$tachyons_elm$Tachyons$classes(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$sans_serif]))
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$header,
+						_List_fromArray(
+							[
+								$justgage$tachyons_elm$Tachyons$classes(
+								_List_fromArray(
+									[$justgage$tachyons_elm$Tachyons$Classes$bg_white_90, $justgage$tachyons_elm$Tachyons$Classes$w_100, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv3, $justgage$tachyons_elm$Tachyons$Classes$pv4_ns, $justgage$tachyons_elm$Tachyons$Classes$ph4_m, $justgage$tachyons_elm$Tachyons$Classes$ph5_l, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$items_center]))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$justgage$tachyons_elm$Tachyons$classes(
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$w5]))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$a,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$href('/admin'),
+												$justgage$tachyons_elm$Tachyons$classes(
+												_List_fromArray(
+													[$justgage$tachyons_elm$Tachyons$Classes$fw6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$black]))
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Admin dashboard')
+											])),
+										$author$project$RequestStatus$view(status)
+									])),
+								A2(
+								$elm$html$Html$a,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$href('/'),
+										$justgage$tachyons_elm$Tachyons$classes(
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$black, $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_moon_gray]))
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('View site')
+									]))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$justgage$tachyons_elm$Tachyons$classes(
+								_List_fromArray(
+									[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$items_center]))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$main_,
+								_List_fromArray(
+									[
+										$justgage$tachyons_elm$Tachyons$classes(
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$pt4, $justgage$tachyons_elm$Tachyons$Classes$ph4, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds]))
+									]),
+								body)
+							]))
+					]))
+			]),
+		title: title
+	};
+};
+var $justgage$tachyons_elm$Tachyons$Classes$mb3 = 'mb3';
+var $justgage$tachyons_elm$Tachyons$Classes$measure = 'measure';
+var $justgage$tachyons_elm$Tachyons$Classes$mt3 = 'mt3';
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
 	return _Utils_Tuple2(msg, true);
@@ -11832,7 +12042,48 @@ var $elm$html$Html$Events$onSubmit = function (msg) {
 			$elm$html$Html$Events$alwaysPreventDefault,
 			$elm$json$Json$Decode$succeed(msg)));
 };
+var $justgage$tachyons_elm$Tachyons$Classes$pa2 = 'pa2';
+var $justgage$tachyons_elm$Tachyons$Classes$pa4 = 'pa4';
+var $justgage$tachyons_elm$Tachyons$Classes$pointer = 'pointer';
+var $justgage$tachyons_elm$Tachyons$Classes$red = 'red';
+var $author$project$Validations$required = function (string) {
+	return (!$elm$core$String$length(string)) ? $elm$core$Maybe$Just('required') : $elm$core$Maybe$Nothing;
+};
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
+var $author$project$Validations$unique = F2(
+	function (others, attr) {
+		return A2($elm$core$List$member, attr, others) ? $elm$core$Maybe$Just('taken') : $elm$core$Maybe$Nothing;
+	});
 var $elm$core$Result$andThen = F2(
 	function (callback, result) {
 		if (result.$ === 'Ok') {
@@ -12841,17 +13092,6 @@ var $dillonkearns$elm_markdown$Markdown$Parser$deadEndsToString = function (dead
 		'\n',
 		A2($elm$core$List$map, $dillonkearns$elm_markdown$Markdown$Parser$deadEndToString, deadEnds));
 };
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $dillonkearns$elm_markdown$HtmlParser$Cdata = function (a) {
 	return {$: 'Cdata', a: a};
 };
@@ -13757,36 +13997,6 @@ var $elm$core$Tuple$mapSecond = F2(
 			x,
 			func(y));
 	});
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
 var $dillonkearns$elm_markdown$Markdown$Parser$innerParagraphParser = A2(
 	$elm$parser$Parser$Advanced$mapChompedString,
 	F2(
@@ -13877,27 +14087,6 @@ var $dillonkearns$elm_markdown$Markdown$OrderedList$positiveIntegerMaxOf9Digits 
 	},
 	$dillonkearns$elm_markdown$Parser$Extra$positiveInteger);
 var $dillonkearns$elm_markdown$Whitespace$space = $elm$parser$Parser$Advanced$token($dillonkearns$elm_markdown$Parser$Token$space);
-var $elm$core$List$repeatHelp = F3(
-	function (result, n, value) {
-		repeatHelp:
-		while (true) {
-			if (n <= 0) {
-				return result;
-			} else {
-				var $temp$result = A2($elm$core$List$cons, value, result),
-					$temp$n = n - 1,
-					$temp$value = value;
-				result = $temp$result;
-				n = $temp$n;
-				value = $temp$value;
-				continue repeatHelp;
-			}
-		}
-	});
-var $elm$core$List$repeat = F2(
-	function (n, value) {
-		return A3($elm$core$List$repeatHelp, _List_Nil, n, value);
-	});
 var $dillonkearns$elm_markdown$Parser$Extra$upTo = F2(
 	function (n, parser) {
 		var _v0 = A2($elm$core$List$repeat, n, parser);
@@ -20602,191 +20791,334 @@ var $author$project$Main$viewMarkdown = function (string) {
 		return $elm$html$Html$text(errors);
 	}
 };
-var $author$project$Main$viewArticleEdit = function (art) {
-	var updatedAt = A2(
-		$elm$html$Html$span,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Last saved: ' + art.updatedAt)
-			]));
-	var submit = A2(
-		$elm$html$Html$button,
-		_List_fromArray(
-			[
-				$elm$html$Html$Events$onClick($author$project$Main$SaveArticle),
-				$elm$html$Html$Attributes$disabled(art.saved)
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Save')
-			]));
-	var preview = A2(
-		$elm$html$Html$article,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h1,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(art.title)
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$author$project$Main$viewMarkdown(art.body)
-					]))
-			]));
-	var field = F4(
-		function (label_, inputType, val_, toEditMsg) {
+var $justgage$tachyons_elm$Tachyons$Classes$white = 'white';
+var $author$project$Main$viewArticleEdit = F2(
+	function (art, model) {
+		var submit = A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick($author$project$Main$SaveArticle),
+					$elm$html$Html$Attributes$disabled(art.saved),
+					$justgage$tachyons_elm$Tachyons$classes(
+					_Utils_ap(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$input_reset, $justgage$tachyons_elm$Tachyons$Classes$button_reset, $justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$w5, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$ba]),
+						art.saved ? _List_Nil : _List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$white, $justgage$tachyons_elm$Tachyons$Classes$bg_blue, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_white, $justgage$tachyons_elm$Tachyons$Classes$hover_blue, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$b__blue, $justgage$tachyons_elm$Tachyons$Classes$pointer])))
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Save')
+				]));
+		var preview = A2(
+			$elm$html$Html$article,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h1,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(art.title)
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$author$project$Main$viewMarkdown(art.body)
+						]))
+				]));
+		var label_ = function (name_) {
 			return A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for(label_)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(label_)
-							])),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$input,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$type_(inputType),
-										$elm$html$Html$Attributes$value(val_),
-										$elm$html$Html$Attributes$name(label_),
-										$elm$html$Html$Events$onInput(
-										function (s) {
-											return $author$project$Main$ChangedArticle(
-												toEditMsg(s));
-										})
-									]),
-								_List_Nil)
-							]))
-					]));
-		});
-	var slugField = A4(field, 'Slug', 'text', art.slug, $author$project$Main$ChangedSlug);
-	var titleField = A4(field, 'Title', 'text', art.title, $author$project$Main$ChangedTitle);
-	var bodyField = A2(
-		$elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
 				$elm$html$Html$label,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$for('Body')
+						$elm$html$Html$Attributes$for(name_),
+						$justgage$tachyons_elm$Tachyons$classes(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$b, $justgage$tachyons_elm$Tachyons$Classes$db, $justgage$tachyons_elm$Tachyons$Classes$mb2]))
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Body')
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
+						$elm$html$Html$text(name_)
+					]));
+		};
+		var inputClasses = _List_fromArray(
+			[$justgage$tachyons_elm$Tachyons$Classes$input_reset, $justgage$tachyons_elm$Tachyons$Classes$ba, $justgage$tachyons_elm$Tachyons$Classes$b__black_20, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$pa2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$db, $justgage$tachyons_elm$Tachyons$Classes$w_100]);
+		var hint = function (message) {
+			return A2(
+				$elm$html$Html$aside,
 				_List_fromArray(
 					[
-						A2(
-						$elm$html$Html$textarea,
+						$justgage$tachyons_elm$Tachyons$classes(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$black_60, $justgage$tachyons_elm$Tachyons$Classes$db, $justgage$tachyons_elm$Tachyons$Classes$mb2]))
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(message)
+					]));
+		};
+		var updatedAt = hint('Last saved: ' + art.updatedAt);
+		var errMessage = F2(
+			function (name_, maybeErr) {
+				if (maybeErr.$ === 'Just') {
+					var err = maybeErr.a;
+					return A2(
+						$elm$html$Html$aside,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$value(art.body),
-								$elm$html$Html$Attributes$name('Body'),
-								$elm$html$Html$Events$onInput(
-								function (s) {
-									return $author$project$Main$ChangedArticle(
-										$author$project$Main$ChangedBody(s));
-								})
+								$justgage$tachyons_elm$Tachyons$classes(
+								_List_fromArray(
+									[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$red, $justgage$tachyons_elm$Tachyons$Classes$db, $justgage$tachyons_elm$Tachyons$Classes$mb2]))
 							]),
-						_List_Nil)
-					]))
-			]));
-	var backLink = A2(
+						_List_fromArray(
+							[
+								$elm$html$Html$text(name_ + (' ' + err))
+							]));
+				} else {
+					return $elm$html$Html$text('');
+				}
+			});
+		var field = F6(
+			function (name_, inputType, val_, toEditMsg, maybeErr, hint_) {
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$justgage$tachyons_elm$Tachyons$classes(
+							_List_fromArray(
+								[$justgage$tachyons_elm$Tachyons$Classes$mb3, $justgage$tachyons_elm$Tachyons$Classes$measure]))
+						]),
+					_List_fromArray(
+						[
+							label_(name_),
+							hint(hint_),
+							A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$input,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$type_(inputType),
+											$elm$html$Html$Attributes$value(val_),
+											$elm$html$Html$Attributes$name(name_),
+											$justgage$tachyons_elm$Tachyons$classes(
+											_Utils_ap(
+												inputClasses,
+												function () {
+													if (maybeErr.$ === 'Just') {
+														return _List_fromArray(
+															[$justgage$tachyons_elm$Tachyons$Classes$red]);
+													} else {
+														return _List_Nil;
+													}
+												}())),
+											$elm$html$Html$Events$onInput(
+											function (s) {
+												return $author$project$Main$ChangedArticle(
+													toEditMsg(s));
+											})
+										]),
+									_List_Nil)
+								])),
+							A2(errMessage, name_, maybeErr)
+						]));
+			});
+		var slugField = function () {
+			var otherSlugs = A2(
+				$elm$core$List$map,
+				function ($) {
+					return $.slug;
+				},
+				A2(
+					$elm$core$List$filter,
+					function (a) {
+						return !_Utils_eq(a.id, art.id);
+					},
+					model.articles));
+			return A6(
+				field,
+				'Slug',
+				'text',
+				art.slug,
+				$author$project$Main$ChangedSlug,
+				A2($author$project$Validations$unique, otherSlugs, art.slug),
+				'Your article will be published at ' + ('/' + art.slug));
+		}();
+		var titleField = A6(
+			field,
+			'Title',
+			'text',
+			art.title,
+			$author$project$Main$ChangedTitle,
+			$author$project$Validations$required(art.title),
+			'');
+		var bodyField = A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					label_('Body'),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$textarea,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$value(art.body),
+									$elm$html$Html$Attributes$name('Body'),
+									$justgage$tachyons_elm$Tachyons$classes(
+									_Utils_ap(
+										inputClasses,
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$h5]))),
+									$elm$html$Html$Events$onInput(
+									function (s) {
+										return $author$project$Main$ChangedArticle(
+											$author$project$Main$ChangedBody(s));
+									})
+								]),
+							_List_Nil)
+						]))
+				]));
+		return $author$project$Main$layout(
+			{
+				body: _List_fromArray(
+					[
+						A2(
+						$elm$html$Html$form,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$id('edit_' + art.id),
+								$elm$html$Html$Events$onSubmit($author$project$Main$SaveArticle),
+								$justgage$tachyons_elm$Tachyons$classes(
+								_List_fromArray(
+									[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$pa4, $justgage$tachyons_elm$Tachyons$Classes$black_80]))
+							]),
+						_List_fromArray(
+							[
+								titleField,
+								bodyField,
+								slugField,
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$justgage$tachyons_elm$Tachyons$classes(
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_center, $justgage$tachyons_elm$Tachyons$Classes$mt3]))
+									]),
+								_List_fromArray(
+									[submit, updatedAt]))
+							])),
+						preview
+					]),
+				status: model.status,
+				title: 'Editing article \'' + (art.title + '\'')
+			});
+	});
+var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
+var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
+var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
+var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow = 'hover-bg-washed-yellow';
+var $author$project$Main$viewArticleListing = function (art) {
+	return A2(
 		$elm$html$Html$a,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$href('/admin')
+				$elm$html$Html$Attributes$href('/admin/articles/' + art.id),
+				$justgage$tachyons_elm$Tachyons$classes(
+				_List_fromArray(
+					[$justgage$tachyons_elm$Tachyons$Classes$black, $justgage$tachyons_elm$Tachyons$Classes$link]))
 			]),
 		_List_fromArray(
 			[
-				$elm$html$Html$text('Back')
-			]));
-	return {
-		body: _List_fromArray(
-			[
 				A2(
-				$elm$html$Html$form,
+				$elm$html$Html$article,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$id('edit_' + art.id),
-						$elm$html$Html$Events$onSubmit($author$project$Main$SaveArticle)
+						$elm$html$Html$Attributes$id(art.id),
+						$justgage$tachyons_elm$Tachyons$classes(
+						_List_fromArray(
+							[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$br3, $justgage$tachyons_elm$Tachyons$Classes$ba, $justgage$tachyons_elm$Tachyons$Classes$b__black_10, $justgage$tachyons_elm$Tachyons$Classes$ph4, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow, $justgage$tachyons_elm$Tachyons$Classes$bg_animate]))
 					]),
 				_List_fromArray(
 					[
-						titleField,
-						bodyField,
-						slugField,
 						A2(
-						$elm$html$Html$div,
+						$elm$html$Html$h3,
 						_List_Nil,
 						_List_fromArray(
-							[backLink, submit])),
-						updatedAt
-					])),
-				preview
-			]),
-		title: 'Editing article \'' + (art.title + '\'')
-	};
-};
-var $author$project$Main$viewArticleListing = function (art) {
-	return A2(
-		$elm$html$Html$article,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id(art.id)
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h3,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(art.title)
-					])),
-				A2(
-				$elm$html$Html$a,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$href('/admin/articles/' + art.id)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('edit')
+							[
+								$elm$html$Html$text(art.title)
+							]))
 					]))
 			]));
 };
 var $author$project$Main$viewArticlesIndex = function (model) {
-	return {
-		body: A2($elm$core$List$map, $author$project$Main$viewArticleListing, model.articles),
-		title: 'Articles'
-	};
+	return $author$project$Main$layout(
+		{
+			body: _List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$justgage$tachyons_elm$Tachyons$classes(
+									_List_fromArray(
+										[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between]))
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$h1,
+									_List_Nil,
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Articles')
+										])),
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$href('/admin/articles/new'),
+											$justgage$tachyons_elm$Tachyons$classes(
+											_List_fromArray(
+												[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$white, $justgage$tachyons_elm$Tachyons$Classes$bg_blue, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_white, $justgage$tachyons_elm$Tachyons$Classes$hover_blue, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$ba, $justgage$tachyons_elm$Tachyons$Classes$b__blue]))
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('New article')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$justgage$tachyons_elm$Tachyons$classes(
+									_List_fromArray(
+										[$justgage$tachyons_elm$Tachyons$Classes$mt4]))
+								]),
+							A2($elm$core$List$map, $author$project$Main$viewArticleListing, model.articles))
+						]))
+				]),
+			status: model.status,
+			title: 'Articles'
+		});
 };
 var $author$project$Main$viewNotFound = {
 	body: _List_fromArray(
@@ -20805,9 +21137,9 @@ var $author$project$Main$view = function (model) {
 			var _v1 = model.editingArticle;
 			if (_v1.$ === 'Just') {
 				var art = _v1.a;
-				return $author$project$Main$viewArticleEdit(art);
+				return A2($author$project$Main$viewArticleEdit, art, model);
 			} else {
-				return $author$project$Main$viewNotFound;
+				return A2($author$project$Main$viewArticleEdit, $author$project$Article$new, model);
 			}
 		default:
 			return $author$project$Main$viewNotFound;

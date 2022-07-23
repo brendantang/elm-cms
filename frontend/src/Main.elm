@@ -3,15 +3,18 @@ module Main exposing (..)
 import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, button, div, form, h1, h2, h3, input, label, span, text, textarea)
+import Html exposing (Html, a, article, aside, button, div, form, h1, h2, h3, header, input, label, main_, p, span, text, textarea)
 import Html.Attributes exposing (disabled, for, href, id, name, type_, value)
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Markdown.Parser as Markdown
 import Markdown.Renderer
 import RequestStatus exposing (RequestStatus(..))
+import Tachyons exposing (classes)
+import Tachyons.Classes as T
 import Url
 import Url.Parser exposing ((</>), Parser, map, oneOf, parse, s, string, top)
+import Validations
 
 
 
@@ -206,13 +209,68 @@ view model =
         EditArticle id ->
             case model.editingArticle of
                 Just art ->
-                    viewArticleEdit art
+                    viewArticleEdit art model
 
                 Nothing ->
-                    viewNotFound
+                    viewArticleEdit Article.new model
 
         NotFound ->
             viewNotFound
+
+
+layout : { title : String, status : RequestStatus, body : List (Html Msg) } -> Browser.Document Msg
+layout { title, status, body } =
+    { title = title
+    , body =
+        [ div [ classes [ T.sans_serif ] ]
+            [ header
+                [ classes
+                    [ T.bg_white_90
+                    , T.w_100
+                    , T.ph3
+                    , T.pv3
+                    , T.pv4_ns
+                    , T.ph4_m
+                    , T.ph5_l
+                    , T.flex
+                    , T.justify_between
+                    , T.items_center
+                    ]
+                ]
+                [ div [ classes [ T.flex, T.items_center, T.justify_between, T.w5 ] ]
+                    [ a
+                        [ href "/admin"
+                        , classes [ T.fw6, T.link, T.black ]
+                        ]
+                        [ text "Admin dashboard" ]
+                    , RequestStatus.view status
+                    ]
+                , a
+                    [ href "/"
+                    , classes
+                        [ T.f6
+                        , T.link
+                        , T.br2
+                        , T.ph3
+                        , T.pv2
+                        , T.mb2
+                        , T.dib
+                        , T.black
+                        , T.bg_light_gray
+                        , T.bg_animate
+                        , T.hover_bg_moon_gray
+                        ]
+                    ]
+                    [ text "View site" ]
+                ]
+            , div
+                [ classes [ T.flex, T.flex_column, T.items_center ] ]
+                [ main_ [ classes [ T.pt4, T.ph4, T.w_two_thirds ] ]
+                    body
+                ]
+            ]
+        ]
+    }
 
 
 viewNotFound : Browser.Document Msg
@@ -222,46 +280,135 @@ viewNotFound =
 
 viewArticlesIndex : Model -> Browser.Document Msg
 viewArticlesIndex model =
-    { title = "Articles"
-    , body = List.map viewArticleListing model.articles
-    }
+    layout
+        { title = "Articles"
+        , status = model.status
+        , body =
+            [ div []
+                [ div
+                    [ classes [ T.flex, T.items_center, T.justify_between ]
+                    ]
+                    [ h1 [] [ text "Articles" ]
+                    , a
+                        [ href "/admin/articles/new"
+                        , classes
+                            [ T.f6
+                            , T.link
+                            , T.br2
+                            , T.ph3
+                            , T.pv2
+                            , T.mb2
+                            , T.dib
+                            , T.white
+                            , T.bg_blue
+                            , T.hover_bg_white
+                            , T.hover_blue
+                            , T.bg_animate
+                            , T.ba
+                            , T.b__blue
+                            ]
+                        ]
+                        [ text "New article" ]
+                    ]
+                , div [ classes [ T.mt4 ] ] <|
+                    List.map viewArticleListing model.articles
+                ]
+            ]
+        }
 
 
 viewArticleListing : Article -> Html Msg
 viewArticleListing art =
-    article [ id art.id ]
-        [ h3 [] [ text art.title ]
-        , a [ href ("/admin/articles/" ++ art.id) ] [ text "edit" ]
+    a
+        [ href ("/admin/articles/" ++ art.id)
+        , classes [ T.black, T.link ]
+        ]
+        [ article
+            [ id art.id
+            , classes
+                [ T.flex
+                , T.items_center
+                , T.justify_between
+                , T.br3
+                , T.ba
+                , T.b__black_10
+                , T.ph4
+                , T.mb2
+                , T.flex
+                , T.items_center
+                , T.justify_between
+                , T.hover_bg_washed_yellow
+                , T.bg_animate
+                ]
+            ]
+            [ h3 [] [ text art.title ]
+            ]
         ]
 
 
-viewArticleEdit : Article -> Browser.Document Msg
-viewArticleEdit art =
+viewArticleEdit : Article -> Model -> Browser.Document Msg
+viewArticleEdit art model =
     let
-        field label_ inputType val_ toEditMsg =
-            div []
-                [ label [ for label_ ] [ text label_ ]
+        label_ name_ =
+            label [ for name_, classes [ T.f6, T.b, T.db, T.mb2 ] ] [ text name_ ]
+
+        inputClasses =
+            [ T.input_reset, T.ba, T.b__black_20, T.br2, T.pa2, T.mb2, T.db, T.w_100 ]
+
+        hint message =
+            aside [ classes [ T.f6, T.black_60, T.db, T.mb2 ] ] [ text message ]
+
+        errMessage name_ maybeErr =
+            case maybeErr of
+                Just err ->
+                    aside [ classes [ T.f6, T.red, T.db, T.mb2 ] ]
+                        [ text <| name_ ++ " " ++ err ]
+
+                Nothing ->
+                    text ""
+
+        field name_ inputType val_ toEditMsg maybeErr hint_ =
+            div
+                [ classes
+                    [ T.mb3
+                    , T.measure
+                    ]
+                ]
+                [ label_ name_
+                , hint hint_
                 , div []
                     [ input
                         [ type_ inputType
                         , value val_
-                        , name label_
+                        , name name_
+                        , classes
+                            (inputClasses
+                                ++ (case maybeErr of
+                                        Just _ ->
+                                            [ T.red ]
+
+                                        _ ->
+                                            []
+                                   )
+                            )
                         , onInput (\s -> ChangedArticle (toEditMsg s))
                         ]
                         []
                     ]
+                , errMessage name_ maybeErr
                 ]
 
         titleField =
-            field "Title" "text" art.title ChangedTitle
+            field "Title" "text" art.title ChangedTitle (Validations.required art.title) ""
 
         bodyField =
             div []
-                [ label [ for "Body" ] [ text "Body" ]
+                [ label_ "Body"
                 , div []
                     [ textarea
                         [ value art.body
                         , name "Body"
+                        , classes (inputClasses ++ [ T.h5 ])
                         , onInput (\s -> ChangedArticle (ChangedBody s))
                         ]
                         []
@@ -269,16 +416,52 @@ viewArticleEdit art =
                 ]
 
         slugField =
-            field "Slug" "text" art.slug ChangedSlug
+            let
+                otherSlugs =
+                    model.articles |> List.filter (\a -> a.id /= art.id) |> List.map .slug
+            in
+            field "Slug"
+                "text"
+                art.slug
+                ChangedSlug
+                (Validations.unique otherSlugs art.slug)
+                ("Your article will be published at " ++ "/" ++ art.slug)
 
         submit =
-            button [ onClick SaveArticle, disabled art.saved ] [ text "Save" ]
+            button
+                [ onClick SaveArticle
+                , disabled art.saved
+                , classes <|
+                    [ T.input_reset
+                    , T.button_reset
+                    , T.f6
+                    , T.w5
+                    , T.link
+                    , T.br2
+                    , T.ph3
+                    , T.pv2
+                    , T.mb2
+                    , T.dib
+                    , T.ba
+                    ]
+                        ++ (if art.saved then
+                                []
+
+                            else
+                                [ T.white
+                                , T.bg_blue
+                                , T.hover_bg_white
+                                , T.hover_blue
+                                , T.bg_animate
+                                , T.b__blue
+                                , T.pointer
+                                ]
+                           )
+                ]
+                [ text "Save" ]
 
         updatedAt =
-            span [] [ text ("Last saved: " ++ art.updatedAt) ]
-
-        backLink =
-            a [ href "/admin" ] [ text "Back" ]
+            hint ("Last saved: " ++ art.updatedAt)
 
         preview =
             article []
@@ -286,24 +469,34 @@ viewArticleEdit art =
                 , div [] [ viewMarkdown art.body ]
                 ]
     in
-    { title = "Editing article '" ++ art.title ++ "'"
-    , body =
-        [ form
-            [ id ("edit_" ++ art.id)
-            , onSubmit SaveArticle
-            ]
-            [ titleField
-            , bodyField
-            , slugField
-            , div []
-                [ backLink
-                , submit
+    layout
+        { title = "Editing article '" ++ art.title ++ "'"
+        , status = model.status
+        , body =
+            [ form
+                [ id ("edit_" ++ art.id)
+                , onSubmit SaveArticle
+                , classes [ T.flex, T.flex_column, T.pa4, T.black_80 ]
                 ]
-            , updatedAt
+                [ titleField
+                , bodyField
+                , slugField
+                , div
+                    [ classes
+                        [ T.flex
+                        , T.flex_column
+                        , T.items_center
+                        , T.justify_center
+                        , T.mt3
+                        ]
+                    ]
+                    [ submit
+                    , updatedAt
+                    ]
+                ]
+            , preview
             ]
-        , preview
-        ]
-    }
+        }
 
 
 viewMarkdown : String -> Html Msg
