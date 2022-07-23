@@ -3,10 +3,12 @@ module Main exposing (..)
 import Article exposing (Article, Articles)
 import Browser
 import Browser.Navigation as Nav
-import Html exposing (Html, a, article, button, h2, h3, span, text, textarea)
-import Html.Attributes exposing (disabled, href, id, value)
-import Html.Events exposing (onClick, onInput)
+import Html exposing (Html, a, article, button, div, form, h1, h2, h3, input, label, span, text, textarea)
+import Html.Attributes exposing (disabled, for, href, id, name, type_, value)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
+import Markdown.Parser as Markdown
+import Markdown.Renderer
 import RequestStatus exposing (RequestStatus(..))
 import Url
 import Url.Parser exposing ((</>), Parser, map, oneOf, parse, s, string, top)
@@ -70,6 +72,8 @@ type Msg
 
 type EditArticleMsg
     = ChangedBody String
+    | ChangedSlug String
+    | ChangedTitle String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -154,6 +158,12 @@ updateArticle msg art =
         ChangedBody body ->
             { unsaved | body = body }
 
+        ChangedSlug slug ->
+            { unsaved | slug = slug }
+
+        ChangedTitle title ->
+            { unsaved | title = title }
+
 
 
 -- ROUTES
@@ -227,20 +237,94 @@ viewArticleListing art =
 
 viewArticleEdit : Article -> Browser.Document Msg
 viewArticleEdit art =
+    let
+        field label_ inputType val_ toEditMsg =
+            div []
+                [ label [ for label_ ] [ text label_ ]
+                , div []
+                    [ input
+                        [ type_ inputType
+                        , value val_
+                        , name label_
+                        , onInput (\s -> ChangedArticle (toEditMsg s))
+                        ]
+                        []
+                    ]
+                ]
+
+        titleField =
+            field "Title" "text" art.title ChangedTitle
+
+        bodyField =
+            div []
+                [ label [ for "Body" ] [ text "Body" ]
+                , div []
+                    [ textarea
+                        [ value art.body
+                        , name "Body"
+                        , onInput (\s -> ChangedArticle (ChangedBody s))
+                        ]
+                        []
+                    ]
+                ]
+
+        slugField =
+            field "Slug" "text" art.slug ChangedSlug
+
+        submit =
+            button [ onClick SaveArticle, disabled art.saved ] [ text "Save" ]
+
+        updatedAt =
+            span [] [ text ("Last saved: " ++ art.updatedAt) ]
+
+        backLink =
+            a [ href "/admin" ] [ text "Back" ]
+
+        preview =
+            article []
+                [ h1 [] [ text art.title ]
+                , div [] [ viewMarkdown art.body ]
+                ]
+    in
     { title = "Editing article '" ++ art.title ++ "'"
     , body =
-        [ article [ id art.id ]
-            [ h2 [] [ text art.title ]
-            , textarea
-                [ value art.body
-                , onInput (\s -> ChangedArticle (ChangedBody s))
-                ]
-                []
+        [ form
+            [ id ("edit_" ++ art.id)
+            , onSubmit SaveArticle
             ]
-        , span [] [ text art.updatedAt ]
-        , button [ onClick SaveArticle, disabled art.saved ] [ text "Save" ]
+            [ titleField
+            , bodyField
+            , slugField
+            , div []
+                [ backLink
+                , submit
+                ]
+            , updatedAt
+            ]
+        , preview
         ]
     }
+
+
+viewMarkdown : String -> Html Msg
+viewMarkdown string =
+    case
+        string
+            |> Markdown.parse
+            |> Result.mapError deadEndsToString
+            |> Result.andThen (\ast -> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer ast)
+    of
+        Ok rendered ->
+            div [] rendered
+
+        Err errors ->
+            text errors
+
+
+deadEndsToString deadEnds =
+    deadEnds
+        |> List.map Markdown.deadEndToString
+        |> String.join "\n"
 
 
 
