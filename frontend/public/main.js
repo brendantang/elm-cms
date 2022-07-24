@@ -11744,19 +11744,26 @@ var $author$project$Main$update = F2(
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var e = result.a;
+					var problemDescription = function () {
+						if ((e.$ === 'BadStatus') && (e.a === 422)) {
+							return 'Could not save this article because of the problems described below...';
+						} else {
+							return 'There was an error communicating with the database.';
+						}
+					}();
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								status: $author$project$RequestStatus$Problem('Could not fetch article from backend')
+								status: $author$project$RequestStatus$Problem(problemDescription)
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 'ChangedArticle':
 				var editMsg = msg.a;
-				var _v4 = model.editingArticle;
-				if (_v4.$ === 'Just') {
-					var art = _v4.a;
+				var _v5 = model.editingArticle;
+				if (_v5.$ === 'Just') {
+					var art = _v5.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -11769,9 +11776,9 @@ var $author$project$Main$update = F2(
 					return noop;
 				}
 			default:
-				var _v5 = model.editingArticle;
-				if (_v5.$ === 'Just') {
-					var art = _v5.a;
+				var _v6 = model.editingArticle;
+				if (_v6.$ === 'Just') {
+					var art = _v6.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,

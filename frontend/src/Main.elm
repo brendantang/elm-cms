@@ -111,7 +111,16 @@ update msg model =
                     ( { model | editingArticle = Just art, status = Idle }, Cmd.none )
 
                 Err e ->
-                    ( { model | status = Problem "Could not fetch article from backend" }, Cmd.none )
+                    let
+                        problemDescription =
+                            case e of
+                                Http.BadStatus 422 ->
+                                    "Could not save this article because of the problems described below..."
+
+                                _ ->
+                                    "There was an error communicating with the database."
+                    in
+                    ( { model | status = Problem problemDescription }, Cmd.none )
 
         ChangedArticle editMsg ->
             case model.editingArticle of
