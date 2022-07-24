@@ -301,7 +301,18 @@ viewArticlesIndex model =
         , body =
             [ div [ classes [ T.w_two_thirds_ns ] ]
                 [ div
-                    [ classes [ T.flex, T.items_center, T.justify_between ]
+                    [ classes
+                        [ T.flex
+                        , T.items_center
+
+                        -- On large screens
+                        , T.justify_between_ns
+                        , T.flex_row_ns
+
+                        -- On phone screens
+                        , T.flex_column
+                        , T.justify_start
+                        ]
                     ]
                     [ h1 [] [ text "Articles" ]
                     , a

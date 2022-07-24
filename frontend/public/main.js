@@ -21107,6 +21107,8 @@ var $author$project$Main$viewArticleEdit = F2(
 				title: 'Editing article'
 			});
 	});
+var $justgage$tachyons_elm$Tachyons$Classes$justify_between_ns = 'justify-between-ns';
+var $justgage$tachyons_elm$Tachyons$Classes$justify_start = 'justify-start';
 var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
 var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
 var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
@@ -21166,7 +21168,7 @@ var $author$project$Main$viewArticlesIndex = function (model) {
 								[
 									$justgage$tachyons_elm$Tachyons$classes(
 									_List_fromArray(
-										[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between]))
+										[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between_ns, $justgage$tachyons_elm$Tachyons$Classes$flex_row_ns, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$justify_start]))
 								]),
 							_List_fromArray(
 								[
