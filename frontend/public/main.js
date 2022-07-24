@@ -11847,9 +11847,15 @@ var $justgage$tachyons_elm$Tachyons$Classes$input_reset = 'input-reset';
 var $justgage$tachyons_elm$Tachyons$Classes$items_center = 'items-center';
 var $justgage$tachyons_elm$Tachyons$Classes$justify_center = 'justify-center';
 var $elm$html$Html$label = _VirtualDom_node('label');
+var $justgage$tachyons_elm$Tachyons$Classes$b__dotted = 'b--dotted';
+var $justgage$tachyons_elm$Tachyons$Classes$b__light_gray = 'b--light-gray';
+var $justgage$tachyons_elm$Tachyons$Classes$bb = 'bb';
+var $justgage$tachyons_elm$Tachyons$Classes$bb_0_ns = 'bb-0-ns';
 var $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray = 'bg-light-gray';
-var $justgage$tachyons_elm$Tachyons$Classes$bg_white_90 = 'bg-white-90';
+var $justgage$tachyons_elm$Tachyons$Classes$bl_0 = 'bl-0';
 var $justgage$tachyons_elm$Tachyons$Classes$black = 'black';
+var $justgage$tachyons_elm$Tachyons$Classes$br_0 = 'br-0';
+var $justgage$tachyons_elm$Tachyons$Classes$bt_0 = 'bt-0';
 var $justgage$tachyons_elm$Tachyons$Classes$fw6 = 'fw6';
 var $elm$html$Html$header = _VirtualDom_node('header');
 var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_moon_gray = 'hover-bg-moon-gray';
@@ -11858,8 +11864,8 @@ var $justgage$tachyons_elm$Tachyons$Classes$link = 'link';
 var $elm$html$Html$main_ = _VirtualDom_node('main');
 var $justgage$tachyons_elm$Tachyons$Classes$mb2 = 'mb2';
 var $justgage$tachyons_elm$Tachyons$Classes$ph3 = 'ph3';
-var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
 var $justgage$tachyons_elm$Tachyons$Classes$ph4_m = 'ph4-m';
+var $justgage$tachyons_elm$Tachyons$Classes$ph4_ns = 'ph4-ns';
 var $justgage$tachyons_elm$Tachyons$Classes$ph5_l = 'ph5-l';
 var $justgage$tachyons_elm$Tachyons$Classes$pv2 = 'pv2';
 var $justgage$tachyons_elm$Tachyons$Classes$pv3 = 'pv3';
@@ -11891,12 +11897,23 @@ var $author$project$RequestStatus$spinner = A2(
 	$elm$html$Html$div,
 	_List_fromArray(
 		[
-			$elm$html$Html$Attributes$class('lds-ellipsis')
+			$justgage$tachyons_elm$Tachyons$classes(
+			_List_fromArray(
+				[$justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$h4, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$justify_center]))
 		]),
-	A2(
-		$elm$core$List$repeat,
-		4,
-		A2($elm$html$Html$div, _List_Nil, _List_Nil)));
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('lds-ellipsis')
+				]),
+			A2(
+				$elm$core$List$repeat,
+				4,
+				A2($elm$html$Html$div, _List_Nil, _List_Nil)))
+		]));
 var $justgage$tachyons_elm$Tachyons$Classes$bg_washed_red = 'bg-washed-red';
 var $justgage$tachyons_elm$Tachyons$Classes$dark_red = 'dark-red';
 var $justgage$tachyons_elm$Tachyons$Classes$lh_title = 'lh-title';
@@ -11935,32 +11952,18 @@ var $author$project$RequestStatus$viewProblem = function (description) {
 			]));
 };
 var $author$project$RequestStatus$view = function (status) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$justgage$tachyons_elm$Tachyons$classes(
-				_List_fromArray(
-					[$justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$h4, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$justify_center]))
-			]),
-		_List_fromArray(
-			[
-				function () {
-				switch (status.$) {
-					case 'Idle':
-						return $elm$html$Html$text('');
-					case 'Fetching':
-						return $author$project$RequestStatus$spinner;
-					default:
-						var description = status.a;
-						return $author$project$RequestStatus$viewProblem(description);
-				}
-			}()
-			]));
+	switch (status.$) {
+		case 'Idle':
+			return $elm$html$Html$text('');
+		case 'Fetching':
+			return $author$project$RequestStatus$spinner;
+		default:
+			var description = status.a;
+			return $author$project$RequestStatus$viewProblem(description);
+	}
 };
-var $justgage$tachyons_elm$Tachyons$Classes$w5 = 'w5';
 var $justgage$tachyons_elm$Tachyons$Classes$w_100 = 'w-100';
-var $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds = 'w-two-thirds';
+var $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns = 'w-two-thirds-ns';
 var $author$project$Main$layout = function (_v0) {
 	var title = _v0.title;
 	var status = _v0.status;
@@ -11984,7 +11987,7 @@ var $author$project$Main$layout = function (_v0) {
 							[
 								$justgage$tachyons_elm$Tachyons$classes(
 								_List_fromArray(
-									[$justgage$tachyons_elm$Tachyons$Classes$bg_white_90, $justgage$tachyons_elm$Tachyons$Classes$w_100, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv3, $justgage$tachyons_elm$Tachyons$Classes$pv4_ns, $justgage$tachyons_elm$Tachyons$Classes$ph4_m, $justgage$tachyons_elm$Tachyons$Classes$ph5_l, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$items_center]))
+									[$justgage$tachyons_elm$Tachyons$Classes$bb, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$bb_0_ns, $justgage$tachyons_elm$Tachyons$Classes$b__light_gray, $justgage$tachyons_elm$Tachyons$Classes$b__dotted, $justgage$tachyons_elm$Tachyons$Classes$bt_0, $justgage$tachyons_elm$Tachyons$Classes$bl_0, $justgage$tachyons_elm$Tachyons$Classes$br_0, $justgage$tachyons_elm$Tachyons$Classes$w_100, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv3, $justgage$tachyons_elm$Tachyons$Classes$pv4_ns, $justgage$tachyons_elm$Tachyons$Classes$ph4_m, $justgage$tachyons_elm$Tachyons$Classes$ph5_l, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$items_center]))
 							]),
 						_List_fromArray(
 							[
@@ -11994,7 +11997,7 @@ var $author$project$Main$layout = function (_v0) {
 									[
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between, $justgage$tachyons_elm$Tachyons$Classes$w5]))
+											[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_between]))
 									]),
 								_List_fromArray(
 									[
@@ -12019,7 +12022,7 @@ var $author$project$Main$layout = function (_v0) {
 										$elm$html$Html$Attributes$href('/'),
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$black, $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_moon_gray]))
+											[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$black, $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_moon_gray]))
 									]),
 								_List_fromArray(
 									[
@@ -12042,23 +12045,17 @@ var $author$project$Main$layout = function (_v0) {
 									[
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$ph4, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds]))
+											[$justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$ph4_ns, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns]))
 									]),
 								_List_fromArray(
 									[
 										A2(
 										$elm$html$Html$main_,
 										_List_Nil,
-										function () {
-											if (status.$ === 'Idle') {
-												return body;
-											} else {
-												return _List_fromArray(
-													[
-														$author$project$RequestStatus$view(status)
-													]);
-											}
-										}())
+										A2(
+											$elm$core$List$cons,
+											$author$project$RequestStatus$view(status),
+											body))
 									]))
 							]))
 					]))
@@ -20840,6 +20837,7 @@ var $author$project$Main$viewMarkdown = function (string) {
 		return $elm$html$Html$text(errors);
 	}
 };
+var $justgage$tachyons_elm$Tachyons$Classes$w5 = 'w5';
 var $justgage$tachyons_elm$Tachyons$Classes$white = 'white';
 var $author$project$Main$viewArticleEdit = F2(
 	function (art, model) {
@@ -21080,6 +21078,7 @@ var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
 var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
 var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
 var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow = 'hover-bg-washed-yellow';
+var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
 var $author$project$Main$viewArticleListing = function (art) {
 	return A2(
 		$elm$html$Html$a,

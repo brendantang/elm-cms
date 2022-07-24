@@ -225,7 +225,14 @@ layout { title, status, body } =
         [ div [ classes [ T.sans_serif ] ]
             [ header
                 [ classes
-                    [ T.bg_white_90
+                    [ T.bb
+                    , T.mb2
+                    , T.bb_0_ns
+                    , T.b__light_gray
+                    , T.b__dotted
+                    , T.bt_0
+                    , T.bl_0
+                    , T.br_0
                     , T.w_100
                     , T.ph3
                     , T.pv3
@@ -237,7 +244,7 @@ layout { title, status, body } =
                     , T.items_center
                     ]
                 ]
-                [ div [ classes [ T.flex, T.items_center, T.justify_between, T.w5 ] ]
+                [ div [ classes [ T.flex, T.items_center, T.justify_between ] ]
                     [ a
                         [ href "/admin"
                         , classes [ T.fw6, T.link, T.black ]
@@ -252,7 +259,6 @@ layout { title, status, body } =
                         , T.br2
                         , T.ph3
                         , T.pv2
-                        , T.mb2
                         , T.dib
                         , T.black
                         , T.bg_light_gray
@@ -264,14 +270,10 @@ layout { title, status, body } =
                 ]
             , div
                 [ classes [ T.flex, T.flex_column, T.items_center ] ]
-                [ div [ classes [ T.ph4, T.w_two_thirds ] ]
+                [ div [ classes [ T.ph3, T.ph4_ns, T.w_two_thirds_ns ] ]
                     [ main_ [] <|
-                        case status of
-                            Idle ->
-                                body
-
-                            _ ->
-                                [ RequestStatus.view status ]
+                        RequestStatus.view status
+                            :: body
                     ]
                 ]
             ]

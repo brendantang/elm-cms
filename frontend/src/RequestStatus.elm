@@ -18,22 +18,22 @@ type RequestStatus
 
 view : RequestStatus -> Html msg
 view status =
-    div [ classes [ T.mb2, T.h4, T.flex, T.items_center, T.flex_column, T.justify_center ] ]
-        [ case status of
-            Idle ->
-                text ""
+    case status of
+        Idle ->
+            text ""
 
-            Fetching ->
-                spinner
+        Fetching ->
+            spinner
 
-            Problem description ->
-                viewProblem description
-        ]
+        Problem description ->
+            viewProblem description
 
 
 spinner : Html msg
 spinner =
-    div [ class "lds-ellipsis" ] <| List.repeat 4 (div [] [])
+    div [ classes [ T.mb2, T.h4, T.flex, T.items_center, T.flex_column, T.justify_center ] ]
+        [ div [ class "lds-ellipsis" ] <| List.repeat 4 (div [] [])
+        ]
 
 
 viewProblem : String -> Html msg
