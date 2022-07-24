@@ -279,11 +279,9 @@ layout { title, status, body } =
                 ]
             , div
                 [ classes [ T.flex, T.flex_column, T.items_center ] ]
-                [ div [ classes [ T.ph3, T.ph4_ns, T.w_two_thirds_ns ] ]
-                    [ main_ [] <|
-                        RequestStatus.view status
-                            :: body
-                    ]
+                [ main_ [ classes [ T.ph3, T.ph4_ns, T.w_100, T.flex, T.flex_column, T.items_center ] ] <|
+                    RequestStatus.view status
+                        :: body
                 ]
             ]
         ]
@@ -301,7 +299,7 @@ viewArticlesIndex model =
         { title = "Articles"
         , status = model.status
         , body =
-            [ div []
+            [ div [ classes [ T.w_two_thirds_ns ] ]
                 [ div
                     [ classes [ T.flex, T.items_center, T.justify_between ]
                     ]
@@ -481,37 +479,42 @@ viewArticleEdit art model =
             hint ("Last saved: " ++ art.updatedAt)
 
         preview =
-            article []
-                [ h1 [] [ text art.title ]
-                , div [] [ viewMarkdown art.body ]
+            div [ classes [ T.ph4 ] ]
+                [ article [ classes [ T.mb5 ] ]
+                    [ h1 [] [ text art.title ]
+                    , div [] [ viewMarkdown art.body ]
+                    ]
+                , hint "Article preview"
+                , updatedAt
                 ]
     in
     layout
-        { title = "Editing article '" ++ art.title ++ "'"
+        { title = "Editing article"
         , status = model.status
         , body =
-            [ form
-                [ id ("edit_" ++ art.id)
-                , onSubmit SaveArticle
-                , classes [ T.flex, T.flex_column, T.black_80 ]
-                ]
-                [ titleField
-                , bodyField
-                , slugField
-                , div
-                    [ classes
-                        [ T.flex
-                        , T.flex_column
-                        , T.items_center
-                        , T.justify_center
-                        , T.mt3
+            [ div [ classes [ T.w_100, T.flex, T.flex_row_ns, T.flex_column ] ]
+                [ form
+                    [ id ("edit_" ++ art.id)
+                    , onSubmit SaveArticle
+                    , classes [ T.bg_light_gray, T.br2, T.pa4, T.flex, T.flex_column, T.black_80 ]
+                    ]
+                    [ titleField
+                    , bodyField
+                    , slugField
+                    , div
+                        [ classes
+                            [ T.flex
+                            , T.flex_column
+                            , T.items_center
+                            , T.justify_center
+                            , T.mt3
+                            ]
+                        ]
+                        [ submit
                         ]
                     ]
-                    [ submit
-                    , updatedAt
-                    ]
+                , preview
                 ]
-            , preview
             ]
         }
 

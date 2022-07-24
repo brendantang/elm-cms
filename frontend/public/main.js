@@ -11811,6 +11811,7 @@ var $justgage$tachyons_elm$Tachyons$Classes$b__blue = 'b--blue';
 var $justgage$tachyons_elm$Tachyons$Classes$ba = 'ba';
 var $justgage$tachyons_elm$Tachyons$Classes$bg_animate = 'bg-animate';
 var $justgage$tachyons_elm$Tachyons$Classes$bg_blue = 'bg-blue';
+var $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray = 'bg-light-gray';
 var $justgage$tachyons_elm$Tachyons$Classes$black_60 = 'black-60';
 var $justgage$tachyons_elm$Tachyons$Classes$black_80 = 'black-80';
 var $justgage$tachyons_elm$Tachyons$Classes$br2 = 'br2';
@@ -11844,6 +11845,7 @@ var $elm$core$List$filter = F2(
 	});
 var $justgage$tachyons_elm$Tachyons$Classes$flex = 'flex';
 var $justgage$tachyons_elm$Tachyons$Classes$flex_column = 'flex-column';
+var $justgage$tachyons_elm$Tachyons$Classes$flex_row_ns = 'flex-row-ns';
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$form = _VirtualDom_node('form');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -11858,7 +11860,6 @@ var $justgage$tachyons_elm$Tachyons$Classes$b__dotted = 'b--dotted';
 var $justgage$tachyons_elm$Tachyons$Classes$b__light_gray = 'b--light-gray';
 var $justgage$tachyons_elm$Tachyons$Classes$bb = 'bb';
 var $justgage$tachyons_elm$Tachyons$Classes$bb_0_ns = 'bb-0-ns';
-var $justgage$tachyons_elm$Tachyons$Classes$bg_light_gray = 'bg-light-gray';
 var $justgage$tachyons_elm$Tachyons$Classes$bl_0 = 'bl-0';
 var $justgage$tachyons_elm$Tachyons$Classes$black = 'black';
 var $justgage$tachyons_elm$Tachyons$Classes$br_0 = 'br-0';
@@ -11970,7 +11971,6 @@ var $author$project$RequestStatus$view = function (status) {
 	}
 };
 var $justgage$tachyons_elm$Tachyons$Classes$w_100 = 'w-100';
-var $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns = 'w-two-thirds-ns';
 var $author$project$Main$layout = function (_v0) {
 	var title = _v0.title;
 	var status = _v0.status;
@@ -12047,23 +12047,17 @@ var $author$project$Main$layout = function (_v0) {
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$div,
+								$elm$html$Html$main_,
 								_List_fromArray(
 									[
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$ph4_ns, $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns]))
+											[$justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$ph4_ns, $justgage$tachyons_elm$Tachyons$Classes$w_100, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$items_center]))
 									]),
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$main_,
-										_List_Nil,
-										A2(
-											$elm$core$List$cons,
-											$author$project$RequestStatus$view(status),
-											body))
-									]))
+								A2(
+									$elm$core$List$cons,
+									$author$project$RequestStatus$view(status),
+									body))
 							]))
 					]))
 			]),
@@ -12071,6 +12065,7 @@ var $author$project$Main$layout = function (_v0) {
 	};
 };
 var $justgage$tachyons_elm$Tachyons$Classes$mb3 = 'mb3';
+var $justgage$tachyons_elm$Tachyons$Classes$mb5 = 'mb5';
 var $justgage$tachyons_elm$Tachyons$Classes$measure = 'measure';
 var $justgage$tachyons_elm$Tachyons$Classes$mt3 = 'mt3';
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
@@ -12097,6 +12092,8 @@ var $elm$html$Html$Events$onSubmit = function (msg) {
 			$elm$json$Json$Decode$succeed(msg)));
 };
 var $justgage$tachyons_elm$Tachyons$Classes$pa2 = 'pa2';
+var $justgage$tachyons_elm$Tachyons$Classes$pa4 = 'pa4';
+var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
 var $justgage$tachyons_elm$Tachyons$Classes$pointer = 'pointer';
 var $justgage$tachyons_elm$Tachyons$Classes$red = 'red';
 var $author$project$Validations$required = function (string) {
@@ -20865,26 +20862,6 @@ var $author$project$Main$viewArticleEdit = F2(
 				[
 					$elm$html$Html$text('Save')
 				]));
-		var preview = A2(
-			$elm$html$Html$article,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$h1,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text(art.title)
-						])),
-					A2(
-					$elm$html$Html$div,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$author$project$Main$viewMarkdown(art.body)
-						]))
-				]));
 		var label_ = function (name_) {
 			return A2(
 				$elm$html$Html$label,
@@ -20917,6 +20894,44 @@ var $author$project$Main$viewArticleEdit = F2(
 					]));
 		};
 		var updatedAt = hint('Last saved: ' + art.updatedAt);
+		var preview = A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$justgage$tachyons_elm$Tachyons$classes(
+					_List_fromArray(
+						[$justgage$tachyons_elm$Tachyons$Classes$ph4]))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$article,
+					_List_fromArray(
+						[
+							$justgage$tachyons_elm$Tachyons$classes(
+							_List_fromArray(
+								[$justgage$tachyons_elm$Tachyons$Classes$mb5]))
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h1,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text(art.title)
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$author$project$Main$viewMarkdown(art.body)
+								]))
+						])),
+					hint('Article preview'),
+					updatedAt
+				]));
 		var errMessage = F2(
 			function (name_, maybeErr) {
 				if (maybeErr.$ === 'Just') {
@@ -21050,42 +21065,52 @@ var $author$project$Main$viewArticleEdit = F2(
 				body: _List_fromArray(
 					[
 						A2(
-						$elm$html$Html$form,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$id('edit_' + art.id),
-								$elm$html$Html$Events$onSubmit($author$project$Main$SaveArticle),
 								$justgage$tachyons_elm$Tachyons$classes(
 								_List_fromArray(
-									[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$black_80]))
+									[$justgage$tachyons_elm$Tachyons$Classes$w_100, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_row_ns, $justgage$tachyons_elm$Tachyons$Classes$flex_column]))
 							]),
 						_List_fromArray(
 							[
-								titleField,
-								bodyField,
-								slugField,
 								A2(
-								$elm$html$Html$div,
+								$elm$html$Html$form,
 								_List_fromArray(
 									[
+										$elm$html$Html$Attributes$id('edit_' + art.id),
+										$elm$html$Html$Events$onSubmit($author$project$Main$SaveArticle),
 										$justgage$tachyons_elm$Tachyons$classes(
 										_List_fromArray(
-											[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_center, $justgage$tachyons_elm$Tachyons$Classes$mt3]))
+											[$justgage$tachyons_elm$Tachyons$Classes$bg_light_gray, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$pa4, $justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$black_80]))
 									]),
 								_List_fromArray(
-									[submit, updatedAt]))
-							])),
-						preview
+									[
+										titleField,
+										bodyField,
+										slugField,
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$justgage$tachyons_elm$Tachyons$classes(
+												_List_fromArray(
+													[$justgage$tachyons_elm$Tachyons$Classes$flex, $justgage$tachyons_elm$Tachyons$Classes$flex_column, $justgage$tachyons_elm$Tachyons$Classes$items_center, $justgage$tachyons_elm$Tachyons$Classes$justify_center, $justgage$tachyons_elm$Tachyons$Classes$mt3]))
+											]),
+										_List_fromArray(
+											[submit]))
+									])),
+								preview
+							]))
 					]),
 				status: model.status,
-				title: 'Editing article \'' + (art.title + '\'')
+				title: 'Editing article'
 			});
 	});
 var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
 var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
 var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
 var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow = 'hover-bg-washed-yellow';
-var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
 var $author$project$Main$viewArticleListing = function (art) {
 	return A2(
 		$elm$html$Html$a,
@@ -21119,6 +21144,7 @@ var $author$project$Main$viewArticleListing = function (art) {
 					]))
 			]));
 };
+var $justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns = 'w-two-thirds-ns';
 var $author$project$Main$viewArticlesIndex = function (model) {
 	return $author$project$Main$layout(
 		{
@@ -21126,7 +21152,12 @@ var $author$project$Main$viewArticlesIndex = function (model) {
 				[
 					A2(
 					$elm$html$Html$div,
-					_List_Nil,
+					_List_fromArray(
+						[
+							$justgage$tachyons_elm$Tachyons$classes(
+							_List_fromArray(
+								[$justgage$tachyons_elm$Tachyons$Classes$w_two_thirds_ns]))
+						]),
 					_List_fromArray(
 						[
 							A2(
