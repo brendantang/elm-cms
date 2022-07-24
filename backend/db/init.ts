@@ -1,7 +1,6 @@
 import { postgres } from "../../deps.ts";
 
-export default async function initDatabase(db: postgres.Pool) {
-  const client = await db.connect();
+export default async function initDatabase(db: postgres.Client) {
   let schema;
   try {
     schema = await Deno.readTextFile(`${Deno.cwd()}/backend/db/schema.sql`);
@@ -10,7 +9,7 @@ export default async function initDatabase(db: postgres.Pool) {
     throw (err);
   }
 
-  const tx = client.createTransaction("initialize_database_transaction");
+  const tx = db.createTransaction("initialize_database_transaction");
   await tx.begin();
   await tx.queryArray(schema);
   await tx.commit();

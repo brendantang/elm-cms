@@ -28,8 +28,8 @@ if (!DATABASE_URL) {
   throw `I can't start up without a database connection string.
    Try starting again with an environment variable named 'DATABASE_URL'`;
 }
-const pool = new postgres.Pool(DATABASE_URL, 100);
-await initDatabase(pool);
+const db = new postgres.Client(DATABASE_URL);
+await initDatabase(db);
 
 const [USERNAME, PASSWORD] = [
   Deno.env.get("BASIC_AUTH_USERNAME"),
@@ -45,11 +45,11 @@ users[USERNAME] = PASSWORD;
 const authMiddleware = basicAuth(users, unauthorized);
 
 const routes: Routes = {
-  "/api/articles": GET(indexArticles(pool)),
+  "/api/articles": GET(indexArticles(db)),
   "/api/articles/:id": handleMethods(
     new Map()
-      .set("GET", getArticle(pool))
-      .set("POST", authMiddleware(updateArticle(pool))),
+      .set("GET", getArticle(db))
+      .set("POST", authMiddleware(updateArticle(db))),
   )(notFound),
   "/api*": notFound,
   "/admin/:filename*": authMiddleware(GET(
