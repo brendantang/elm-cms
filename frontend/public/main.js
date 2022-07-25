@@ -10996,6 +10996,7 @@ var $author$project$Article$Article = F6(
 		return {body: body, id: id, saved: saved, slug: slug, title: title, updatedAt: updatedAt};
 	});
 var $elm$json$Json$Decode$map6 = _Json_map6;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $author$project$Article$decoder = A2(
 	$elm$json$Json$Decode$field,
 	'article',
@@ -11003,9 +11004,33 @@ var $author$project$Article$decoder = A2(
 		$elm$json$Json$Decode$map6,
 		$author$project$Article$Article,
 		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, 'slug', $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, 'body', $elm$json$Json$Decode$string),
+		A2(
+			$elm$json$Json$Decode$field,
+			'title',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					]))),
+		A2(
+			$elm$json$Json$Decode$field,
+			'slug',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					]))),
+		A2(
+			$elm$json$Json$Decode$field,
+			'body',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					]))),
 		A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
 		$elm$json$Json$Decode$succeed(true)));
 var $elm$http$Http$BadStatus_ = F2(
@@ -11270,8 +11295,24 @@ var $author$project$Article$metaOnlyDecoder = A7(
 	$elm$json$Json$Decode$map6,
 	$author$project$Article$Article,
 	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'title', $elm$json$Json$Decode$string),
-	A2($elm$json$Json$Decode$field, 'slug', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$field,
+		'title',
+		$elm$json$Json$Decode$oneOf(
+			_List_fromArray(
+				[
+					$elm$json$Json$Decode$string,
+					$elm$json$Json$Decode$succeed('')
+				]))),
+	A2(
+		$elm$json$Json$Decode$field,
+		'slug',
+		$elm$json$Json$Decode$oneOf(
+			_List_fromArray(
+				[
+					$elm$json$Json$Decode$string,
+					$elm$json$Json$Decode$succeed('')
+				]))),
 	$elm$json$Json$Decode$succeed(''),
 	A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
 	$elm$json$Json$Decode$succeed(true));
@@ -11585,6 +11626,16 @@ var $author$project$Main$subscriptions = function (model) {
 var $author$project$RequestStatus$Problem = function (a) {
 	return {$: 'Problem', a: a};
 };
+var $elm$http$Http$post = function (r) {
+	return $elm$http$Http$request(
+		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $author$project$Main$createArticle = $elm$http$Http$post(
+	{
+		body: $elm$http$Http$emptyBody,
+		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+		url: '/api/articles'
+	});
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Article$encode = function (art) {
@@ -11607,10 +11658,6 @@ var $elm$http$Http$jsonBody = function (value) {
 		_Http_pair,
 		'application/json',
 		A2($elm$json$Json$Encode$encode, 0, value));
-};
-var $elm$http$Http$post = function (r) {
-	return $elm$http$Http$request(
-		{body: r.body, expect: r.expect, headers: _List_Nil, method: 'POST', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
 var $author$project$Main$saveArticle = function (art) {
 	return $elm$http$Http$post(
@@ -11775,7 +11822,7 @@ var $author$project$Main$update = F2(
 				} else {
 					return noop;
 				}
-			default:
+			case 'SaveArticle':
 				var _v6 = model.editingArticle;
 				if (_v6.$ === 'Just') {
 					var art = _v6.a;
@@ -11787,6 +11834,8 @@ var $author$project$Main$update = F2(
 				} else {
 					return noop;
 				}
+			default:
+				return _Utils_Tuple2(model, $author$project$Main$createArticle);
 		}
 	});
 var $author$project$Article$new = {body: '', id: '', saved: false, slug: '', title: '', updatedAt: 'never'};
@@ -12091,6 +12140,14 @@ var $elm$html$Html$Events$onSubmit = function (msg) {
 			$elm$html$Html$Events$alwaysPreventDefault,
 			$elm$json$Json$Decode$succeed(msg)));
 };
+var $elm_community$maybe_extra$Maybe$Extra$or = F2(
+	function (ma, mb) {
+		if (ma.$ === 'Nothing') {
+			return mb;
+		} else {
+			return ma;
+		}
+	});
 var $justgage$tachyons_elm$Tachyons$Classes$pa2 = 'pa2';
 var $justgage$tachyons_elm$Tachyons$Classes$pa4 = 'pa4';
 var $justgage$tachyons_elm$Tachyons$Classes$ph4 = 'ph4';
@@ -21018,7 +21075,10 @@ var $author$project$Main$viewArticleEdit = F2(
 				'text',
 				art.slug,
 				$author$project$Main$ChangedSlug,
-				A2($author$project$Validations$unique, otherSlugs, art.slug),
+				A2(
+					$elm_community$maybe_extra$Maybe$Extra$or,
+					$author$project$Validations$required(art.slug),
+					A2($author$project$Validations$unique, otherSlugs, art.slug)),
 				'Your article will be published at ' + ('/' + art.slug));
 		}();
 		var titleField = A6(
@@ -21107,6 +21167,7 @@ var $author$project$Main$viewArticleEdit = F2(
 				title: 'Editing article'
 			});
 	});
+var $author$project$Main$CreateArticle = {$: 'CreateArticle'};
 var $justgage$tachyons_elm$Tachyons$Classes$justify_between_ns = 'justify-between-ns';
 var $justgage$tachyons_elm$Tachyons$Classes$justify_start = 'justify-start';
 var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
@@ -21180,10 +21241,10 @@ var $author$project$Main$viewArticlesIndex = function (model) {
 											$elm$html$Html$text('Articles')
 										])),
 									A2(
-									$elm$html$Html$a,
+									$elm$html$Html$button,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$href('/admin/articles/new'),
+											$elm$html$Html$Events$onClick($author$project$Main$CreateArticle),
 											$justgage$tachyons_elm$Tachyons$classes(
 											_List_fromArray(
 												[$justgage$tachyons_elm$Tachyons$Classes$f6, $justgage$tachyons_elm$Tachyons$Classes$link, $justgage$tachyons_elm$Tachyons$Classes$br2, $justgage$tachyons_elm$Tachyons$Classes$ph3, $justgage$tachyons_elm$Tachyons$Classes$pv2, $justgage$tachyons_elm$Tachyons$Classes$mb2, $justgage$tachyons_elm$Tachyons$Classes$dib, $justgage$tachyons_elm$Tachyons$Classes$white, $justgage$tachyons_elm$Tachyons$Classes$bg_blue, $justgage$tachyons_elm$Tachyons$Classes$hover_bg_white, $justgage$tachyons_elm$Tachyons$Classes$hover_blue, $justgage$tachyons_elm$Tachyons$Classes$bg_animate, $justgage$tachyons_elm$Tachyons$Classes$ba, $justgage$tachyons_elm$Tachyons$Classes$b__blue]))
@@ -21236,4 +21297,4 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, slug : String.String, body : String.String, updatedAt : String.String, saved : Basics.Bool }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"],"ChangedArticle":["Main.EditArticleMsg"],"SaveArticle":[]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Main.EditArticleMsg":{"args":[],"tags":{"ChangedBody":["String.String"],"ChangedSlug":["String.String"],"ChangedTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, slug : String.String, body : String.String, updatedAt : String.String, saved : Basics.Bool }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"],"ChangedArticle":["Main.EditArticleMsg"],"SaveArticle":[],"CreateArticle":[]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Main.EditArticleMsg":{"args":[],"tags":{"ChangedBody":["String.String"],"ChangedSlug":["String.String"],"ChangedTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));

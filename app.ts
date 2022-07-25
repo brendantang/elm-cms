@@ -14,6 +14,7 @@ import {
 import indexArticles from "./backend/articles/index.ts";
 import getArticle from "./backend/articles/get.ts";
 import updateArticle from "./backend/articles/update.ts";
+import createArticle from "./backend/articles/create.ts";
 import initDatabase from "./backend/db/init.ts";
 import notFound from "./backend/notFound.ts";
 import unauthorized from "./backend/unauthorized.ts";
@@ -45,7 +46,11 @@ users[USERNAME] = PASSWORD;
 const authMiddleware = basicAuth(users, unauthorized);
 
 const routes: Routes = {
-  "/api/articles": GET(indexArticles(db)),
+  "/api/articles": handleMethods(
+    new Map()
+      .set("GET", indexArticles(db))
+      .set("POST", authMiddleware(createArticle(db))),
+  )(notFound),
   "/api/articles/:id": handleMethods(
     new Map()
       .set("GET", getArticle(db))

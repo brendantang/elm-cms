@@ -56,9 +56,9 @@ decoder =
     field "article" <|
         JD.map6 Article
             (field "id" string)
-            (field "title" string)
-            (field "slug" string)
-            (field "body" string)
+            (field "title" <| JD.oneOf [ string, succeed "" ])
+            (field "slug" <| JD.oneOf [ string, succeed "" ])
+            (field "body" <| JD.oneOf [ string, succeed "" ])
             (field "updated_at" string)
             (succeed True)
 
@@ -72,8 +72,8 @@ metaOnlyDecoder : Decoder Article
 metaOnlyDecoder =
     JD.map6 Article
         (field "id" string)
-        (field "title" string)
-        (field "slug" string)
+        (field "title" <| JD.oneOf [ string, succeed "" ])
+        (field "slug" <| JD.oneOf [ string, succeed "" ])
         (succeed "")
         (field "updated_at" string)
         (succeed True)

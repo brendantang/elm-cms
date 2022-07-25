@@ -9,6 +9,7 @@ import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Markdown.Parser as Markdown
 import Markdown.Renderer
+import Maybe.Extra exposing (or)
 import RequestStatus exposing (RequestStatus(..))
 import Tachyons exposing (classes)
 import Tachyons.Classes as T
@@ -71,6 +72,7 @@ type Msg
     | GotArticleBody (Result Http.Error Article)
     | ChangedArticle EditArticleMsg
     | SaveArticle
+    | CreateArticle
 
 
 type EditArticleMsg
@@ -137,6 +139,9 @@ update msg model =
 
                 Nothing ->
                     noop
+
+        CreateArticle ->
+            ( model, createArticle )
 
 
 updateRoute : Url.Url -> Model -> ( Model, Cmd Msg )
@@ -315,8 +320,8 @@ viewArticlesIndex model =
                         ]
                     ]
                     [ h1 [] [ text "Articles" ]
-                    , a
-                        [ href "/admin/articles/new"
+                    , button
+                        [ onClick CreateArticle
                         , classes
                             [ T.f6
                             , T.link
@@ -450,7 +455,9 @@ viewArticleEdit art model =
                 "text"
                 art.slug
                 ChangedSlug
-                (Validations.unique otherSlugs art.slug)
+                (Validations.unique otherSlugs art.slug
+                    |> or (Validations.required art.slug)
+                )
                 ("Your article will be published at " ++ "/" ++ art.slug)
 
         submit =
@@ -576,5 +583,14 @@ saveArticle art =
     Http.post
         { url = "/api/articles/" ++ art.id
         , body = Http.jsonBody (Article.encode art)
+        , expect = Http.expectJson GotArticleBody Article.decoder
+        }
+
+
+createArticle : Cmd Msg
+createArticle =
+    Http.post
+        { url = "/api/articles"
+        , body = Http.emptyBody
         , expect = Http.expectJson GotArticleBody Article.decoder
         }

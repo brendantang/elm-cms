@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS articles (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-      slug text UNIQUE NOT NULL,
+      slug text UNIQUE,
       title text,
       body text,
       metadata jsonb DEFAULT '{}'::jsonb,
