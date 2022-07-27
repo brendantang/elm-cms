@@ -111,6 +111,10 @@ update msg model =
                     )
 
                 Err e ->
+                    let
+                        _ =
+                            Debug.log "Error fetching articles: " e
+                    in
                     ( { model | status = Problem "Could not fetch articles from backend" }, Cmd.none )
 
         GotArticleBody result ->
@@ -597,7 +601,7 @@ fetchArticleBody : Article.Id -> Cmd Msg
 fetchArticleBody artId =
     Http.get
         { url = "/api/articles/" ++ artId
-        , expect = Http.expectJson GotArticleBody Article.decoder
+        , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }
 
 
@@ -606,7 +610,7 @@ saveArticle art =
     Http.post
         { url = "/api/articles/" ++ art.id
         , body = Http.jsonBody (Article.encode art)
-        , expect = Http.expectJson GotArticleBody Article.decoder
+        , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }
 
 
@@ -615,5 +619,5 @@ createArticle =
     Http.post
         { url = "/api/articles"
         , body = Http.emptyBody
-        , expect = Http.expectJson GotArticleBody Article.decoder
+        , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }

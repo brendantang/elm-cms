@@ -10991,68 +10991,6 @@ var $author$project$Main$NotFound = {$: 'NotFound'};
 var $author$project$Main$GotArticleBody = function (a) {
 	return {$: 'GotArticleBody', a: a};
 };
-var $author$project$Article$Article = F7(
-	function (id, title, slug, body, updatedAt, slugSet, saved) {
-		return {body: body, id: id, saved: saved, slug: slug, slugSet: slugSet, title: title, updatedAt: updatedAt};
-	});
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$map7 = _Json_map7;
-var $elm$json$Json$Decode$null = _Json_decodeNull;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$nullable = function (decoder) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
-				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
-			]));
-};
-var $author$project$Article$decoder = A2(
-	$elm$json$Json$Decode$field,
-	'article',
-	A8(
-		$elm$json$Json$Decode$map7,
-		$author$project$Article$Article,
-		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
-		A2(
-			$elm$json$Json$Decode$field,
-			'title',
-			$elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						$elm$json$Json$Decode$string,
-						$elm$json$Json$Decode$succeed('')
-					]))),
-		A2(
-			$elm$json$Json$Decode$field,
-			'slug',
-			$elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						$elm$json$Json$Decode$string,
-						$elm$json$Json$Decode$succeed('')
-					]))),
-		A2(
-			$elm$json$Json$Decode$field,
-			'body',
-			$elm$json$Json$Decode$oneOf(
-				_List_fromArray(
-					[
-						$elm$json$Json$Decode$string,
-						$elm$json$Json$Decode$succeed('')
-					]))),
-		A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
-		A2(
-			$elm$json$Json$Decode$andThen,
-			function (maybeSlug) {
-				return $elm$json$Json$Decode$succeed(
-					!_Utils_eq(maybeSlug, $elm$core$Maybe$Nothing));
-			},
-			A2(
-				$elm$json$Json$Decode$field,
-				'slug',
-				$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string))),
-		$elm$json$Json$Decode$succeed(true)));
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -11301,10 +11239,76 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
+var $author$project$Article$Article = F7(
+	function (id, title, slug, body, updatedAt, slugSet, saved) {
+		return {body: body, id: id, saved: saved, slug: slug, slugSet: slugSet, title: title, updatedAt: updatedAt};
+	});
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
+var $author$project$Article$decodeWithBody = function (bodyDecoder) {
+	return A8(
+		$elm$json$Json$Decode$map7,
+		$author$project$Article$Article,
+		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
+		A2(
+			$elm$json$Json$Decode$field,
+			'title',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					]))),
+		A2(
+			$elm$json$Json$Decode$field,
+			'slug',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					]))),
+		bodyDecoder,
+		A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
+		A2(
+			$elm$json$Json$Decode$andThen,
+			function (maybeSlug) {
+				return $elm$json$Json$Decode$succeed(
+					!_Utils_eq(maybeSlug, $elm$core$Maybe$Nothing));
+			},
+			A2(
+				$elm$json$Json$Decode$field,
+				'slug',
+				$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string))),
+		$elm$json$Json$Decode$succeed(true));
+};
+var $author$project$Article$singleDecoder = A2(
+	$elm$json$Json$Decode$field,
+	'article',
+	$author$project$Article$decodeWithBody(
+		A2(
+			$elm$json$Json$Decode$field,
+			'body',
+			$elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						$elm$json$Json$Decode$string,
+						$elm$json$Json$Decode$succeed('')
+					])))));
 var $author$project$Main$fetchArticleBody = function (artId) {
 	return $elm$http$Http$get(
 		{
-			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
 			url: '/api/articles/' + artId
 		});
 };
@@ -11314,7 +11318,9 @@ var $author$project$Main$GotArticles = function (a) {
 var $author$project$Article$listDecoder = A2(
 	$elm$json$Json$Decode$field,
 	'articles',
-	$elm$json$Json$Decode$list($author$project$Article$decoder));
+	$elm$json$Json$Decode$list(
+		$author$project$Article$decodeWithBody(
+			$elm$json$Json$Decode$succeed(''))));
 var $author$project$Main$fetchArticles = $elm$http$Http$get(
 	{
 		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticles, $author$project$Article$listDecoder),
@@ -11628,10 +11634,11 @@ var $elm$http$Http$post = function (r) {
 var $author$project$Main$createArticle = $elm$http$Http$post(
 	{
 		body: $elm$http$Http$emptyBody,
-		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
 		url: '/api/articles'
 	});
 var $elm$browser$Browser$Navigation$load = _Browser_load;
+var $elm$core$Debug$log = _Debug_log;
 var $elm$browser$Browser$Navigation$pushUrl = _Browser_pushUrl;
 var $author$project$Article$encode = function (art) {
 	return $elm$json$Json$Encode$object(
@@ -11659,7 +11666,7 @@ var $author$project$Main$saveArticle = function (art) {
 		{
 			body: $elm$http$Http$jsonBody(
 				$author$project$Article$encode(art)),
-			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$decoder),
+			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
 			url: '/api/articles/' + art.id
 		});
 };
@@ -11853,6 +11860,7 @@ var $author$project$Main$update = F2(
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var e = result.a;
+					var _v3 = A2($elm$core$Debug$log, 'Error fetching articles: ', e);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -11893,9 +11901,9 @@ var $author$project$Main$update = F2(
 				}
 			case 'ChangedArticle':
 				var editMsg = msg.a;
-				var _v5 = model.editingArticle;
-				if (_v5.$ === 'Just') {
-					var art = _v5.a;
+				var _v6 = model.editingArticle;
+				if (_v6.$ === 'Just') {
+					var art = _v6.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -11908,9 +11916,9 @@ var $author$project$Main$update = F2(
 					return noop;
 				}
 			case 'SaveArticle':
-				var _v6 = model.editingArticle;
-				if (_v6.$ === 'Just') {
-					var art = _v6.a;
+				var _v7 = model.editingArticle;
+				if (_v7.$ === 'Just') {
+					var art = _v7.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,

@@ -2,12 +2,12 @@ module Article exposing
     ( Article
     , Articles
     , Id
-    , decoder
     , encode
     , listDecoder
     , new
     , none
     , pathTo
+    , singleDecoder
     , slugify
     )
 
@@ -61,22 +61,26 @@ slugify s =
 -- JSON
 
 
-decoder : Decoder Article
-decoder =
-    field "article" <|
-        JD.map7 Article
-            (field "id" string)
-            (field "title" <| JD.oneOf [ string, succeed "" ])
-            (field "slug" <| JD.oneOf [ string, succeed "" ])
-            (field "body" <| JD.oneOf [ string, succeed "" ])
-            (field "updated_at" string)
-            (field "slug" (JD.nullable JD.string) |> JD.andThen (\maybeSlug -> JD.succeed (maybeSlug /= Nothing)))
-            (succeed True)
+singleDecoder : Decoder Article
+singleDecoder =
+    field "article" (decodeWithBody <| field "body" <| JD.oneOf [ string, succeed "" ])
+
+
+decodeWithBody : Decoder String -> Decoder Article
+decodeWithBody bodyDecoder =
+    JD.map7 Article
+        (field "id" string)
+        (field "title" <| JD.oneOf [ string, succeed "" ])
+        (field "slug" <| JD.oneOf [ string, succeed "" ])
+        bodyDecoder
+        (field "updated_at" string)
+        (field "slug" (JD.nullable JD.string) |> JD.andThen (\maybeSlug -> JD.succeed (maybeSlug /= Nothing)))
+        (succeed True)
 
 
 listDecoder : Decoder Articles
 listDecoder =
-    field "articles" (list decoder)
+    field "articles" (list <| decodeWithBody (JD.succeed ""))
 
 
 encode : Article -> JE.Value
