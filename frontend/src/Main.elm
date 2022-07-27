@@ -102,7 +102,13 @@ update msg model =
         GotArticles result ->
             case result of
                 Ok articles ->
-                    ( { model | articles = articles, editingArticle = Nothing, status = Idle }, Cmd.none )
+                    ( { model
+                        | articles = articles
+                        , editingArticle = Nothing
+                        , status = Idle
+                      }
+                    , Cmd.none
+                    )
 
                 Err e ->
                     ( { model | status = Problem "Could not fetch articles from backend" }, Cmd.none )
@@ -110,7 +116,13 @@ update msg model =
         GotArticleBody result ->
             case result of
                 Ok art ->
-                    ( { model | editingArticle = Just art, status = Idle }, Cmd.none )
+                    ( { model
+                        | editingArticle = Just art
+                        , status = Idle
+                        , route = EditArticle art.id
+                      }
+                    , Cmd.none
+                    )
 
                 Err e ->
                     let
@@ -176,10 +188,21 @@ updateArticle msg art =
             { unsaved | body = body }
 
         ChangedSlug slug ->
-            { unsaved | slug = slug }
+            { unsaved
+                | slug = slug
+                , slugSet = True
+            }
 
         ChangedTitle title ->
-            { unsaved | title = title }
+            { unsaved
+                | title = title
+                , slug =
+                    if art.slugSet then
+                        art.slug
+
+                    else
+                        Maybe.withDefault "" (Article.slugify title)
+            }
 
 
 
@@ -351,7 +374,7 @@ viewArticlesIndex model =
 viewArticleListing : Article -> Html Msg
 viewArticleListing art =
     a
-        [ href ("/admin/articles/" ++ art.id)
+        [ href (Article.pathTo art)
         , classes [ T.black, T.link ]
         ]
         [ article

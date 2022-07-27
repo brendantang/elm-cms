@@ -5147,6 +5147,107 @@ function _Url_percentDecode(string)
 	}
 }
 
+// CREATE
+
+var _Regex_never = /.^/;
+
+var _Regex_fromStringWith = F2(function(options, string)
+{
+	var flags = 'g';
+	if (options.multiline) { flags += 'm'; }
+	if (options.caseInsensitive) { flags += 'i'; }
+
+	try
+	{
+		return $elm$core$Maybe$Just(new RegExp(string, flags));
+	}
+	catch(error)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+});
+
+
+// USE
+
+var _Regex_contains = F2(function(re, string)
+{
+	return string.match(re) !== null;
+});
+
+
+var _Regex_findAtMost = F3(function(n, re, str)
+{
+	var out = [];
+	var number = 0;
+	var string = str;
+	var lastIndex = re.lastIndex;
+	var prevLastIndex = -1;
+	var result;
+	while (number++ < n && (result = re.exec(string)))
+	{
+		if (prevLastIndex == re.lastIndex) break;
+		var i = result.length - 1;
+		var subs = new Array(i);
+		while (i > 0)
+		{
+			var submatch = result[i];
+			subs[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
+		prevLastIndex = re.lastIndex;
+	}
+	re.lastIndex = lastIndex;
+	return _List_fromArray(out);
+});
+
+
+var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
+{
+	var count = 0;
+	function jsReplacer(match)
+	{
+		if (count++ >= n)
+		{
+			return match;
+		}
+		var i = arguments.length - 3;
+		var submatches = new Array(i);
+		while (i > 0)
+		{
+			var submatch = arguments[i];
+			submatches[--i] = submatch
+				? $elm$core$Maybe$Just(submatch)
+				: $elm$core$Maybe$Nothing;
+		}
+		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
+	}
+	return string.replace(re, jsReplacer);
+});
+
+var _Regex_splitAtMost = F3(function(n, re, str)
+{
+	var string = str;
+	var out = [];
+	var start = re.lastIndex;
+	var restoreLastIndex = re.lastIndex;
+	while (n--)
+	{
+		var result = re.exec(string);
+		if (!result) break;
+		out.push(string.slice(start, result.index));
+		start = re.lastIndex;
+	}
+	out.push(string.slice(start));
+	re.lastIndex = restoreLastIndex;
+	return _List_fromArray(out);
+});
+
+var _Regex_infinity = Infinity;
+
+
 
 
 // STRINGS
@@ -5275,107 +5376,6 @@ var _Parser_findSubString = F5(function(smallString, offset, row, col, bigString
 
 	return _Utils_Tuple3(newOffset, row, col);
 });
-
-
-// CREATE
-
-var _Regex_never = /.^/;
-
-var _Regex_fromStringWith = F2(function(options, string)
-{
-	var flags = 'g';
-	if (options.multiline) { flags += 'm'; }
-	if (options.caseInsensitive) { flags += 'i'; }
-
-	try
-	{
-		return $elm$core$Maybe$Just(new RegExp(string, flags));
-	}
-	catch(error)
-	{
-		return $elm$core$Maybe$Nothing;
-	}
-});
-
-
-// USE
-
-var _Regex_contains = F2(function(re, string)
-{
-	return string.match(re) !== null;
-});
-
-
-var _Regex_findAtMost = F3(function(n, re, str)
-{
-	var out = [];
-	var number = 0;
-	var string = str;
-	var lastIndex = re.lastIndex;
-	var prevLastIndex = -1;
-	var result;
-	while (number++ < n && (result = re.exec(string)))
-	{
-		if (prevLastIndex == re.lastIndex) break;
-		var i = result.length - 1;
-		var subs = new Array(i);
-		while (i > 0)
-		{
-			var submatch = result[i];
-			subs[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		out.push(A4($elm$regex$Regex$Match, result[0], result.index, number, _List_fromArray(subs)));
-		prevLastIndex = re.lastIndex;
-	}
-	re.lastIndex = lastIndex;
-	return _List_fromArray(out);
-});
-
-
-var _Regex_replaceAtMost = F4(function(n, re, replacer, string)
-{
-	var count = 0;
-	function jsReplacer(match)
-	{
-		if (count++ >= n)
-		{
-			return match;
-		}
-		var i = arguments.length - 3;
-		var submatches = new Array(i);
-		while (i > 0)
-		{
-			var submatch = arguments[i];
-			submatches[--i] = submatch
-				? $elm$core$Maybe$Just(submatch)
-				: $elm$core$Maybe$Nothing;
-		}
-		return replacer(A4($elm$regex$Regex$Match, match, arguments[arguments.length - 2], count, _List_fromArray(submatches)));
-	}
-	return string.replace(re, jsReplacer);
-});
-
-var _Regex_splitAtMost = F3(function(n, re, str)
-{
-	var string = str;
-	var out = [];
-	var start = re.lastIndex;
-	var restoreLastIndex = re.lastIndex;
-	while (n--)
-	{
-		var result = re.exec(string);
-		if (!result) break;
-		out.push(string.slice(start, result.index));
-		start = re.lastIndex;
-	}
-	out.push(string.slice(start));
-	re.lastIndex = restoreLastIndex;
-	return _List_fromArray(out);
-});
-
-var _Regex_infinity = Infinity;
 var $author$project$Main$LinkClicked = function (a) {
 	return {$: 'LinkClicked', a: a};
 };
@@ -10991,17 +10991,27 @@ var $author$project$Main$NotFound = {$: 'NotFound'};
 var $author$project$Main$GotArticleBody = function (a) {
 	return {$: 'GotArticleBody', a: a};
 };
-var $author$project$Article$Article = F6(
-	function (id, title, slug, body, updatedAt, saved) {
-		return {body: body, id: id, saved: saved, slug: slug, title: title, updatedAt: updatedAt};
+var $author$project$Article$Article = F7(
+	function (id, title, slug, body, updatedAt, slugSet, saved) {
+		return {body: body, id: id, saved: saved, slug: slug, slugSet: slugSet, title: title, updatedAt: updatedAt};
 	});
-var $elm$json$Json$Decode$map6 = _Json_map6;
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
 var $author$project$Article$decoder = A2(
 	$elm$json$Json$Decode$field,
 	'article',
-	A7(
-		$elm$json$Json$Decode$map6,
+	A8(
+		$elm$json$Json$Decode$map7,
 		$author$project$Article$Article,
 		A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
 		A2(
@@ -11032,6 +11042,16 @@ var $author$project$Article$decoder = A2(
 						$elm$json$Json$Decode$succeed('')
 					]))),
 		A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
+		A2(
+			$elm$json$Json$Decode$andThen,
+			function (maybeSlug) {
+				return $elm$json$Json$Decode$succeed(
+					!_Utils_eq(maybeSlug, $elm$core$Maybe$Nothing));
+			},
+			A2(
+				$elm$json$Json$Decode$field,
+				'slug',
+				$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string))),
 		$elm$json$Json$Decode$succeed(true)));
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -11291,35 +11311,10 @@ var $author$project$Main$fetchArticleBody = function (artId) {
 var $author$project$Main$GotArticles = function (a) {
 	return {$: 'GotArticles', a: a};
 };
-var $author$project$Article$metaOnlyDecoder = A7(
-	$elm$json$Json$Decode$map6,
-	$author$project$Article$Article,
-	A2($elm$json$Json$Decode$field, 'id', $elm$json$Json$Decode$string),
-	A2(
-		$elm$json$Json$Decode$field,
-		'title',
-		$elm$json$Json$Decode$oneOf(
-			_List_fromArray(
-				[
-					$elm$json$Json$Decode$string,
-					$elm$json$Json$Decode$succeed('')
-				]))),
-	A2(
-		$elm$json$Json$Decode$field,
-		'slug',
-		$elm$json$Json$Decode$oneOf(
-			_List_fromArray(
-				[
-					$elm$json$Json$Decode$string,
-					$elm$json$Json$Decode$succeed('')
-				]))),
-	$elm$json$Json$Decode$succeed(''),
-	A2($elm$json$Json$Decode$field, 'updated_at', $elm$json$Json$Decode$string),
-	$elm$json$Json$Decode$succeed(true));
 var $author$project$Article$listDecoder = A2(
 	$elm$json$Json$Decode$field,
 	'articles',
-	$elm$json$Json$Decode$list($author$project$Article$metaOnlyDecoder));
+	$elm$json$Json$Decode$list($author$project$Article$decoder));
 var $author$project$Main$fetchArticles = $elm$http$Http$get(
 	{
 		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticles, $author$project$Article$listDecoder),
@@ -11712,6 +11707,89 @@ var $elm$url$Url$toString = function (url) {
 					_Utils_ap(http, url.host)),
 				url.path)));
 };
+var $hecrj$elm_slug$Slug$Slug = function (a) {
+	return {$: 'Slug', a: a};
+};
+var $hecrj$elm_slug$Slug$isAlphanumeric = function (c) {
+	return ((_Utils_cmp(
+		c,
+		_Utils_chr('0')) > -1) && (_Utils_cmp(
+		c,
+		_Utils_chr('9')) < 1)) || ((_Utils_cmp(
+		c,
+		_Utils_chr('a')) > -1) && (_Utils_cmp(
+		c,
+		_Utils_chr('z')) < 1));
+};
+var $elm$core$String$map = _String_map;
+var $elm$regex$Regex$Match = F4(
+	function (match, index, number, submatches) {
+		return {index: index, match: match, number: number, submatches: submatches};
+	});
+var $elm$regex$Regex$replace = _Regex_replaceAtMost(_Regex_infinity);
+var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
+var $elm$regex$Regex$fromString = function (string) {
+	return A2(
+		$elm$regex$Regex$fromStringWith,
+		{caseInsensitive: false, multiline: false},
+		string);
+};
+var $elm$regex$Regex$never = _Regex_never;
+var $hecrj$elm_slug$Slug$simpleQuoteRegex = A2(
+	$elm$core$Maybe$withDefault,
+	$elm$regex$Regex$never,
+	$elm$regex$Regex$fromString('\''));
+var $elm$core$String$toLower = _String_toLower;
+var $elm$core$String$words = _String_words;
+var $hecrj$elm_slug$Slug$processWords = function () {
+	var mapHelp = function (c) {
+		return $hecrj$elm_slug$Slug$isAlphanumeric(c) ? c : _Utils_chr(' ');
+	};
+	return A2(
+		$elm$core$Basics$composeR,
+		A2(
+			$elm$regex$Regex$replace,
+			$hecrj$elm_slug$Slug$simpleQuoteRegex,
+			function (_v0) {
+				return '';
+			}),
+		A2(
+			$elm$core$Basics$composeR,
+			$elm$core$String$toLower,
+			A2(
+				$elm$core$Basics$composeR,
+				$elm$core$String$map(mapHelp),
+				$elm$core$String$words)));
+}();
+var $hecrj$elm_slug$Slug$generate = function (text) {
+	var words = $hecrj$elm_slug$Slug$processWords(text);
+	return _Utils_eq(
+		words,
+		_List_fromArray(
+			[''])) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+		$hecrj$elm_slug$Slug$Slug(
+			A2($elm$core$String$join, '-', words)));
+};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $hecrj$elm_slug$Slug$toString = function (_v0) {
+	var s = _v0.a;
+	return s;
+};
+var $author$project$Article$slugify = function (s) {
+	return A2(
+		$elm$core$Maybe$map,
+		$hecrj$elm_slug$Slug$toString,
+		$hecrj$elm_slug$Slug$generate(s));
+};
 var $author$project$Main$updateArticle = F2(
 	function (msg, art) {
 		var unsaved = _Utils_update(
@@ -11727,12 +11805,18 @@ var $author$project$Main$updateArticle = F2(
 				var slug = msg.a;
 				return _Utils_update(
 					unsaved,
-					{slug: slug});
+					{slug: slug, slugSet: true});
 			default:
 				var title = msg.a;
 				return _Utils_update(
 					unsaved,
-					{title: title});
+					{
+						slug: art.slugSet ? art.slug : A2(
+							$elm$core$Maybe$withDefault,
+							'',
+							$author$project$Article$slugify(title)),
+						title: title
+					});
 		}
 	});
 var $author$project$Main$update = F2(
@@ -11786,6 +11870,7 @@ var $author$project$Main$update = F2(
 							model,
 							{
 								editingArticle: $elm$core$Maybe$Just(art),
+								route: $author$project$Main$EditArticle(art.id),
 								status: $author$project$RequestStatus$Idle
 							}),
 						$elm$core$Platform$Cmd$none);
@@ -11838,7 +11923,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(model, $author$project$Main$createArticle);
 		}
 	});
-var $author$project$Article$new = {body: '', id: '', saved: false, slug: '', title: '', updatedAt: 'never'};
+var $author$project$Article$new = {body: '', id: '', saved: false, slug: '', slugSet: false, title: '', updatedAt: 'never'};
 var $author$project$Main$ChangedArticle = function (a) {
 	return {$: 'ChangedArticle', a: a};
 };
@@ -12260,16 +12345,6 @@ var $elm$html$Html$h5 = _VirtualDom_node('h5');
 var $elm$html$Html$h6 = _VirtualDom_node('h6');
 var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$html$Html$ol = _VirtualDom_node('ol');
 var $dillonkearns$elm_markdown$Markdown$HtmlRenderer$HtmlRenderer = function (a) {
 	return {$: 'HtmlRenderer', a: a};
@@ -12388,7 +12463,6 @@ var $elm$html$Html$td = _VirtualDom_node('td');
 var $elm$html$Html$th = _VirtualDom_node('th');
 var $elm$html$Html$thead = _VirtualDom_node('thead');
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $elm$core$String$words = _String_words;
 var $dillonkearns$elm_markdown$Markdown$Renderer$defaultHtmlRenderer = {
 	blockQuote: $elm$html$Html$blockquote(_List_Nil),
 	codeBlock: function (_v0) {
@@ -13255,7 +13329,6 @@ var $dillonkearns$elm_markdown$HtmlParser$tagNameCharacter = function (c) {
 			return true;
 	}
 };
-var $elm$core$String$toLower = _String_toLower;
 var $dillonkearns$elm_markdown$HtmlParser$tagName = A2(
 	$elm$parser$Parser$Advanced$mapChompedString,
 	F2(
@@ -14487,23 +14560,10 @@ var $dillonkearns$elm_markdown$Markdown$InlineParser$NormalType = {$: 'NormalTyp
 var $dillonkearns$elm_markdown$Markdown$Helpers$containsAmpersand = function (string) {
 	return A2($elm$core$String$contains, '&', string);
 };
-var $elm$regex$Regex$Match = F4(
-	function (match, index, number, submatches) {
-		return {index: index, match: match, number: number, submatches: submatches};
-	});
-var $elm$regex$Regex$fromStringWith = _Regex_fromStringWith;
-var $elm$regex$Regex$fromString = function (string) {
-	return A2(
-		$elm$regex$Regex$fromStringWith,
-		{caseInsensitive: false, multiline: false},
-		string);
-};
-var $elm$regex$Regex$never = _Regex_never;
 var $dillonkearns$elm_markdown$Markdown$Entity$decimalRegex = A2(
 	$elm$core$Maybe$withDefault,
 	$elm$regex$Regex$never,
 	$elm$regex$Regex$fromString('&#([0-9]{1,8});'));
-var $elm$regex$Regex$replace = _Regex_replaceAtMost(_Regex_infinity);
 var $dillonkearns$elm_markdown$Markdown$Entity$isBadEndUnicode = function (_int) {
 	var remain_ = A2($elm$core$Basics$modBy, 16, _int);
 	var remain = A2($elm$core$Basics$modBy, 131070, _int);
@@ -21174,12 +21234,16 @@ var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
 var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
 var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
 var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow = 'hover-bg-washed-yellow';
+var $author$project$Article$pathTo = function (art) {
+	return '/admin/articles/' + art.id;
+};
 var $author$project$Main$viewArticleListing = function (art) {
 	return A2(
 		$elm$html$Html$a,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$href('/admin/articles/' + art.id),
+				$elm$html$Html$Attributes$href(
+				$author$project$Article$pathTo(art)),
 				$justgage$tachyons_elm$Tachyons$classes(
 				_List_fromArray(
 					[$justgage$tachyons_elm$Tachyons$Classes$black, $justgage$tachyons_elm$Tachyons$Classes$link]))
@@ -21297,4 +21361,4 @@ var $author$project$Main$view = function (model) {
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, slug : String.String, body : String.String, updatedAt : String.String, saved : Basics.Bool }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"],"ChangedArticle":["Main.EditArticleMsg"],"SaveArticle":[],"CreateArticle":[]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Main.EditArticleMsg":{"args":[],"tags":{"ChangedBody":["String.String"],"ChangedSlug":["String.String"],"ChangedTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Article.Article":{"args":[],"type":"{ id : Article.Id, title : String.String, slug : String.String, body : String.String, updatedAt : String.String, slugSet : Basics.Bool, saved : Basics.Bool }"},"Article.Articles":{"args":[],"type":"List.List Article.Article"},"Article.Id":{"args":[],"type":"String.String"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotArticles":["Result.Result Http.Error Article.Articles"],"GotArticleBody":["Result.Result Http.Error Article.Article"],"ChangedArticle":["Main.EditArticleMsg"],"SaveArticle":[],"CreateArticle":[]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Main.EditArticleMsg":{"args":[],"tags":{"ChangedBody":["String.String"],"ChangedSlug":["String.String"],"ChangedTitle":["String.String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Basics.Int"],"BadBody":["String.String"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}}}}})}});}(this));

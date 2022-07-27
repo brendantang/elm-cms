@@ -7,10 +7,13 @@ module Article exposing
     , listDecoder
     , new
     , none
+    , pathTo
+    , slugify
     )
 
 import Json.Decode as JD exposing (Decoder, field, list, string, succeed)
 import Json.Encode as JE exposing (object)
+import Slug
 
 
 type alias Article =
@@ -19,6 +22,7 @@ type alias Article =
     , slug : String
     , body : String
     , updatedAt : String
+    , slugSet : Bool
     , saved : Bool
     }
 
@@ -30,6 +34,7 @@ new =
     , slug = ""
     , body = ""
     , updatedAt = "never"
+    , slugSet = False
     , saved = False
     }
 
@@ -47,6 +52,11 @@ type alias Id =
     String
 
 
+slugify : String -> Maybe String
+slugify s =
+    Maybe.map Slug.toString (Slug.generate s)
+
+
 
 -- JSON
 
@@ -54,29 +64,19 @@ type alias Id =
 decoder : Decoder Article
 decoder =
     field "article" <|
-        JD.map6 Article
+        JD.map7 Article
             (field "id" string)
             (field "title" <| JD.oneOf [ string, succeed "" ])
             (field "slug" <| JD.oneOf [ string, succeed "" ])
             (field "body" <| JD.oneOf [ string, succeed "" ])
             (field "updated_at" string)
+            (field "slug" (JD.nullable JD.string) |> JD.andThen (\maybeSlug -> JD.succeed (maybeSlug /= Nothing)))
             (succeed True)
 
 
 listDecoder : Decoder Articles
 listDecoder =
-    field "articles" (list metaOnlyDecoder)
-
-
-metaOnlyDecoder : Decoder Article
-metaOnlyDecoder =
-    JD.map6 Article
-        (field "id" string)
-        (field "title" <| JD.oneOf [ string, succeed "" ])
-        (field "slug" <| JD.oneOf [ string, succeed "" ])
-        (succeed "")
-        (field "updated_at" string)
-        (succeed True)
+    field "articles" (list decoder)
 
 
 encode : Article -> JE.Value
@@ -92,3 +92,12 @@ encode art =
           , JE.string art.body
           )
         ]
+
+
+
+-- VIEW
+
+
+pathTo : Article -> String
+pathTo art =
+    "/admin/articles/" ++ art.id
