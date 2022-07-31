@@ -1,7 +1,10 @@
-import { oak, postgres } from "../../deps.ts";
+import { eta, oak, postgres } from "../../deps.ts";
 import { Article } from "./article.ts";
 
-export default function getArticle(db: postgres.Client) {
+export default function getPublicArticle(
+  db: postgres.Client,
+  template: string,
+) {
   return async function (ctx: oak.Context) {
     try {
       const slug = ctx.params.slug;
@@ -15,7 +18,7 @@ export default function getArticle(db: postgres.Client) {
         ctx.response.body = { message: "Article not found" };
         return;
       }
-      ctx.response.body = { article: article };
+      ctx.response.body = await eta.render(template, { article: article });
     } catch (e) {
       console.error("Error querying the database: ", e);
       ctx.response.status = 404;

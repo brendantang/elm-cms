@@ -1,7 +1,7 @@
 import { oak, secureCompare } from "../deps.ts";
 
-type UsernamesAndPasswords = Record<string, string>;
-function authMiddleware(users: UsernamesAndPasswords): oak.Middleware {
+export type UsernamesAndPasswords = Record<string, string>;
+export function authMiddleware(users: UsernamesAndPasswords): oak.Middleware {
   return async function (
     ctx: oak.Context,
     next,
@@ -27,5 +27,3 @@ function authMiddleware(users: UsernamesAndPasswords): oak.Middleware {
     ctx.response.body = { message: "Not authorized" };
   };
 }
-
-export default authMiddleware;

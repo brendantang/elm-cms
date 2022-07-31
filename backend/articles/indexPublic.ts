@@ -1,7 +1,10 @@
-import { oak, postgres } from "../../deps.ts";
+import { eta, oak, postgres } from "../../deps.ts";
 import { Article } from "./article.ts";
 
-export default function indexPublicArticles(db: postgres.Client) {
+export default function indexPublicArticles(
+  db: postgres.Client,
+  template: string,
+) {
   return async function (ctx: oak.Context) {
     const page = Number(ctx.request.url.searchParams.get("page") || 1);
     const perPage = Number(
@@ -16,8 +19,7 @@ export default function indexPublicArticles(db: postgres.Client) {
         LIMIT ${perPage}
         OFFSET ${offset}`;
       const articles = result.rows;
-
-      ctx.response.body = { articles: articles };
+      ctx.response.body = await eta.render(template, { articles: articles });
     } catch (e) {
       console.error("Error querying the database: ", e);
       ctx.response.status = 500;
