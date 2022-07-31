@@ -1,9 +1,9 @@
-import { json, postgres, RouteHandler } from "../../deps.ts";
+import { postgres } from "../../deps.ts";
 import { Article } from "./article.ts";
-import internalError from "../internalError.ts";
+import { oak } from "../../deps.ts";
 
-export default function createArticle(db: postgres.Client): RouteHandler {
-  return async function (): Promise<Response> {
+export default function createArticle(db: postgres.Client) {
+  return async function (ctx: oak.Context) {
     try {
       const result = await db.queryObject<Article>(
         "INSERT INTO articles DEFAULT VALUES RETURNING * ",
@@ -11,13 +11,14 @@ export default function createArticle(db: postgres.Client): RouteHandler {
 
       const savedArticle = result.rows[0];
       if (!savedArticle) {
-        return internalError();
+        ctx.response.status = 500;
+        return;
       }
 
-      return json({ article: savedArticle });
+      ctx.response.body = { article: savedArticle };
     } catch (e) {
       console.error("Error saving new article to the database: ", e);
-      return internalError();
+      ctx.response.status = 500;
     }
   };
 }

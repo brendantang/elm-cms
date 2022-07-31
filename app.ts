@@ -1,29 +1,17 @@
-import {
-  basicAuth,
-  file,
-  filesWithFallback,
-  GET,
-  handleMethods,
-  logger,
-  postgres,
-  RouteHandler,
-  Routes,
-  serve,
-  timeoutAfter,
-} from "./deps.ts";
+import { logger, oak, postgres } from "./deps.ts";
+import authMiddleware from "./backend/basicAuth.ts";
 import indexArticles from "./backend/articles/index.ts";
 import getArticle from "./backend/articles/get.ts";
 import updateArticle from "./backend/articles/update.ts";
 import createArticle from "./backend/articles/create.ts";
 import initDatabase from "./backend/db/init.ts";
-import notFound from "./backend/notFound.ts";
-import unauthorized from "./backend/unauthorized.ts";
 
-function handleRoutingError(err: unknown) {
-  console.error("Problem serving the request: ", err);
-  return new Response("Sorry, that page doesn't exist.", { status: 404 });
-}
+// Initialize settings with environment variables
 
+// HTTP port to serve the application on
+const PORT = Number(Deno.env.get("PORT") || "8080");
+
+// PostgreSQL database connection string
 const DATABASE_URL = Deno.env.get("DATABASE_URL");
 if (!DATABASE_URL) {
   throw `I can't start up without a database connection string.
@@ -32,6 +20,7 @@ if (!DATABASE_URL) {
 const db = new postgres.Client(DATABASE_URL);
 await initDatabase(db);
 
+// Basic auth credentials to access the admin panel
 const [USERNAME, PASSWORD] = [
   Deno.env.get("BASIC_AUTH_USERNAME"),
   Deno.env.get("BASIC_AUTH_PASSWORD"),
@@ -43,35 +32,27 @@ if (!USERNAME || !PASSWORD) {
 const users = {} as Record<string, string>;
 users[USERNAME] = PASSWORD;
 
-const authMiddleware = basicAuth(users, unauthorized);
+// Initialize the web application
+const app = new oak.Application();
 
-const routes: Routes = {
-  "/api/articles": handleMethods(
-    new Map()
-      .set("GET", indexArticles(db))
-      .set("POST", authMiddleware(createArticle(db))),
-  )(notFound),
-  "/api/articles/:id": handleMethods(
-    new Map()
-      .set("GET", getArticle(db))
-      .set("POST", authMiddleware(updateArticle(db))),
-  )(notFound),
-  "/api*": notFound,
-  "/admin/:filename*": authMiddleware(GET(
-    filesWithFallback(
-      `${Deno.cwd()}/frontend/public/`,
-      "filename",
-      file(`${Deno.cwd()}/frontend/public/index.html`),
-    ),
-  )),
-  "/": GET(
-    function () {
-      return new Response("TODO: Serve content");
-    },
-  ),
-};
+// Set up the application routes
 
-serve(routes, [logger, timeoutAfter(10000)], {
-  port: 8080,
-  onError: handleRoutingError,
-});
+const api = new oak.Router();
+api.use(authMiddleware(users));
+api.get("/articles", indexArticles(db));
+api.post("/articles", createArticle(db));
+api.get("/articles/:id", getArticle(db));
+api.post("/articles/:id", updateArticle(db));
+
+const router = new oak.Router();
+router.use("/api", api.routes(), api.allowedMethods());
+
+//router.get("/admin/:filename*", handleFrontend);
+
+// Set up middlewares for logging
+app.use(router.routes());
+app.use(router.allowedMethods());
+app.use(logger.logger);
+app.use(logger.responseTime);
+
+await app.listen({ port: PORT });

@@ -1,26 +1,25 @@
-import { json, postgres, RouteHandler } from "../../deps.ts";
+import { oak, postgres } from "../../deps.ts";
 import { Article, fromJson, looksGood, validate } from "./article.ts";
-import internalError from "../internalError.ts";
-import notFound from "../notFound.ts";
 
-export default function updateArticle(db: postgres.Client): RouteHandler {
-  return async function (req, _connInfo, params): Promise<Response> {
+export default function updateArticle(db: postgres.Client) {
+  return async function (ctx: oak.Context) {
     try {
-      const id = params["id"];
-      const data = await req.json() as Article;
+      const id = ctx.params.id;
+      const data = await ctx.request.body().value as Article;
       const article = fromJson(data);
       if (!article) {
-        return json({ message: "Could not parse form data into an article" }, {
-          status: 400,
-        });
+        ctx.response.status = 400;
+        ctx.response.body = {
+          message: "Could not parse form data into an article",
+        };
+        return;
       }
 
       article.id = id;
       const validation = await validate(article, db);
       if (!looksGood(validation)) {
-        return json({
-          errors: validation,
-        }, { status: 422 });
+        ctx.response.status = 422;
+        ctx.response.body = { errors: validation };
       } else {
         const result = await db.queryObject<Article>(
           "UPDATE articles SET slug = $SLUG, title = $TITLE, body = $BODY, updated_at = DEFAULT WHERE id = $ID RETURNING * ",
@@ -34,14 +33,15 @@ export default function updateArticle(db: postgres.Client): RouteHandler {
 
         const savedArticle = result.rows[0];
         if (!savedArticle) {
-          return notFound();
+          ctx.response.status = 404;
+          return;
         }
 
-        return json({ article: savedArticle });
+        ctx.response.body = { article: savedArticle };
       }
     } catch (e) {
       console.error("Error saving updated article to the database: ", e);
-      return internalError();
+      ctx.response.status = 500;
     }
   };
 }
