@@ -8,6 +8,7 @@ import createArticle from "./backend/articles/create.ts";
 import initDatabase from "./backend/db/init.ts";
 import serveFiles from "./backend/serveFiles.ts";
 import indexPublicArticles from "./backend/articles/indexPublic.ts";
+import getPublicArticle from "./backend/articles/getPublic.ts";
 
 // Initialize settings with environment variables
 
@@ -64,6 +65,7 @@ admin.get(
 // Set up routes to serve published content
 const content = new oak.Router();
 content.get("/articles", indexPublicArticles(db));
+content.get("/articles/:slug", getPublicArticle(db));
 
 // Wire together all the routes
 const router = new oak.Router();
