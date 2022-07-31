@@ -399,7 +399,13 @@ viewArticleListing art =
                 , T.bg_animate
                 ]
             ]
-            [ h3 [] [ text art.title ]
+            [ h3 []
+                [ if art.title == "" then
+                    span [ classes [ T.o_40 ] ] [ text "No title" ]
+
+                  else
+                    text art.title
+                ]
             ]
         ]
 

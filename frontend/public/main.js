@@ -21242,6 +21242,7 @@ var $justgage$tachyons_elm$Tachyons$Classes$mt4 = 'mt4';
 var $justgage$tachyons_elm$Tachyons$Classes$b__black_10 = 'b--black-10';
 var $justgage$tachyons_elm$Tachyons$Classes$br3 = 'br3';
 var $justgage$tachyons_elm$Tachyons$Classes$hover_bg_washed_yellow = 'hover-bg-washed-yellow';
+var $justgage$tachyons_elm$Tachyons$Classes$o_40 = 'o-40';
 var $author$project$Article$pathTo = function (art) {
 	return '/admin/articles/' + art.id;
 };
@@ -21274,7 +21275,18 @@ var $author$project$Main$viewArticleListing = function (art) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								$elm$html$Html$text(art.title)
+								(art.title === '') ? A2(
+								$elm$html$Html$span,
+								_List_fromArray(
+									[
+										$justgage$tachyons_elm$Tachyons$classes(
+										_List_fromArray(
+											[$justgage$tachyons_elm$Tachyons$Classes$o_40]))
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('No title')
+									])) : $elm$html$Html$text(art.title)
 							]))
 					]))
 			]));
