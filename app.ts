@@ -1,4 +1,5 @@
 import { logger, oak, postgres } from "./deps.ts";
+import errorHandler from "./backend/errorHandler.ts";
 import authMiddleware from "./backend/basicAuth.ts";
 import indexArticles from "./backend/articles/index.ts";
 import getArticle from "./backend/articles/get.ts";
@@ -6,6 +7,7 @@ import updateArticle from "./backend/articles/update.ts";
 import createArticle from "./backend/articles/create.ts";
 import initDatabase from "./backend/db/init.ts";
 import serveFiles from "./backend/serveFiles.ts";
+import indexPublicArticles from "./backend/articles/indexPublic.ts";
 
 // Initialize settings with environment variables
 
@@ -35,6 +37,7 @@ users[USERNAME] = PASSWORD;
 
 // Initialize the web application
 const app = new oak.Application();
+app.use(errorHandler);
 
 // Set up the backend admin panel routes
 const admin = new oak.Router();
@@ -58,10 +61,14 @@ admin.get(
   "/:filename*",
   serveFiles(`${Deno.cwd()}/frontend/public/`, indexFile),
 );
+// Set up routes to serve published content
+const content = new oak.Router();
+content.get("/articles", indexPublicArticles(db));
 
 // Wire together all the routes
 const router = new oak.Router();
 router.use("/admin", admin.routes(), admin.allowedMethods());
+router.use(content.routes(), content.allowedMethods());
 app.use(router.routes());
 
 // Set up middlewares for logging

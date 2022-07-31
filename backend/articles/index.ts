@@ -1,6 +1,5 @@
-import { postgres } from "../../deps.ts";
+import { oak, postgres } from "../../deps.ts";
 import { Article } from "./article.ts";
-import { oak } from "../../deps.ts";
 
 export default function indexArticles(db: postgres.Client) {
   return async function (ctx: oak.Context) {
