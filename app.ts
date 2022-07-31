@@ -5,6 +5,7 @@ import getArticle from "./backend/articles/get.ts";
 import updateArticle from "./backend/articles/update.ts";
 import createArticle from "./backend/articles/create.ts";
 import initDatabase from "./backend/db/init.ts";
+import serveFiles from "./backend/serveFiles.ts";
 
 // Initialize settings with environment variables
 
@@ -47,7 +48,17 @@ api.post("/articles/:id", updateArticle(db));
 const router = new oak.Router();
 router.use("/api", api.routes(), api.allowedMethods());
 
-//router.get("/admin/:filename*", handleFrontend);
+let indexFile: Uint8Array;
+try {
+  indexFile = await Deno.readFile(`${Deno.cwd()}/frontend/public/index.html`);
+} catch (e) {
+  throw `I ran into an error trying to read the default index file use to serve the admin panel frontend.
+    Try fixing this error and starting again: \r${e}`;
+}
+router.get(
+  "/admin/:filename*",
+  serveFiles(`${Deno.cwd()}/frontend/public/`, indexFile),
+);
 
 // Set up middlewares for logging
 app.use(router.routes());
