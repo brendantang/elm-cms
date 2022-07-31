@@ -11309,7 +11309,7 @@ var $author$project$Main$fetchArticleBody = function (artId) {
 	return $elm$http$Http$get(
 		{
 			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
-			url: '/api/articles/' + artId
+			url: '/admin/api/articles/' + artId
 		});
 };
 var $author$project$Main$GotArticles = function (a) {
@@ -11324,7 +11324,7 @@ var $author$project$Article$listDecoder = A2(
 var $author$project$Main$fetchArticles = $elm$http$Http$get(
 	{
 		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticles, $author$project$Article$listDecoder),
-		url: '/api/articles'
+		url: '/admin/api/articles'
 	});
 var $elm$url$Url$Parser$State = F5(
 	function (visited, unvisited, params, frag, value) {
@@ -11635,7 +11635,7 @@ var $author$project$Main$createArticle = $elm$http$Http$post(
 	{
 		body: $elm$http$Http$emptyBody,
 		expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
-		url: '/api/articles'
+		url: '/admin/api/articles'
 	});
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$Debug$log = _Debug_log;
@@ -11667,7 +11667,7 @@ var $author$project$Main$saveArticle = function (art) {
 			body: $elm$http$Http$jsonBody(
 				$author$project$Article$encode(art)),
 			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotArticleBody, $author$project$Article$singleDecoder),
-			url: '/api/articles/' + art.id
+			url: '/admin/api/articles/' + art.id
 		});
 };
 var $elm$url$Url$addPort = F2(

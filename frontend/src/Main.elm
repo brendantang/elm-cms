@@ -592,7 +592,7 @@ deadEndsToString deadEnds =
 fetchArticles : Cmd Msg
 fetchArticles =
     Http.get
-        { url = "/api/articles"
+        { url = "/admin/api/articles"
         , expect = Http.expectJson GotArticles Article.listDecoder
         }
 
@@ -600,7 +600,7 @@ fetchArticles =
 fetchArticleBody : Article.Id -> Cmd Msg
 fetchArticleBody artId =
     Http.get
-        { url = "/api/articles/" ++ artId
+        { url = "/admin/api/articles/" ++ artId
         , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }
 
@@ -608,7 +608,7 @@ fetchArticleBody artId =
 saveArticle : Article -> Cmd Msg
 saveArticle art =
     Http.post
-        { url = "/api/articles/" ++ art.id
+        { url = "/admin/api/articles/" ++ art.id
         , body = Http.jsonBody (Article.encode art)
         , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }
@@ -617,7 +617,7 @@ saveArticle art =
 createArticle : Cmd Msg
 createArticle =
     Http.post
-        { url = "/api/articles"
+        { url = "/admin/api/articles"
         , body = Http.emptyBody
         , expect = Http.expectJson GotArticleBody Article.singleDecoder
         }

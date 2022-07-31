@@ -36,18 +36,17 @@ users[USERNAME] = PASSWORD;
 // Initialize the web application
 const app = new oak.Application();
 
-// Set up the application routes
-
+// Set up the backend admin panel routes
+const admin = new oak.Router();
+admin.use(authMiddleware(users));
+// Set up the admin backend API routes
 const api = new oak.Router();
-api.use(authMiddleware(users));
 api.get("/articles", indexArticles(db));
 api.post("/articles", createArticle(db));
 api.get("/articles/:id", getArticle(db));
 api.post("/articles/:id", updateArticle(db));
-
-const router = new oak.Router();
-router.use("/api", api.routes(), api.allowedMethods());
-
+admin.use("/api", api.routes(), api.allowedMethods());
+// Set up the admin panel frontend
 let indexFile: Uint8Array;
 try {
   indexFile = await Deno.readFile(`${Deno.cwd()}/frontend/public/index.html`);
@@ -55,13 +54,17 @@ try {
   throw `I ran into an error trying to read the default index file use to serve the admin panel frontend.
     Try fixing this error and starting again: \r${e}`;
 }
-router.get(
-  "/admin/:filename*",
+admin.get(
+  "/:filename*",
   serveFiles(`${Deno.cwd()}/frontend/public/`, indexFile),
 );
 
-// Set up middlewares for logging
+// Wire together all the routes
+const router = new oak.Router();
+router.use("/admin", admin.routes(), admin.allowedMethods());
 app.use(router.routes());
+
+// Set up middlewares for logging
 app.use(router.allowedMethods());
 app.use(logger.logger);
 app.use(logger.responseTime);
