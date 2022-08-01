@@ -9,8 +9,7 @@ import initDatabase from "./backend/db/init.ts";
 import indexPublicArticles from "./backend/articles/indexPublic.ts";
 import getPublicArticle from "./backend/articles/getPublic.ts";
 
-const moduleUrl =
-  "https://raw.githubusercontent.com/brendantang/elm-cms/main/frontend/public/";
+const moduleUrl = "https://deno.land/x/press@v0.0.1-alpha/frontend/public/";
 interface Configuration {
   port?: number;
   databaseUrl: string;
